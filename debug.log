@@ -1,0 +1,24 @@
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Hexo version: \u001b[35m3.7.1\u001b[39m","time":"2018-10-18T07:35:20.778Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Working directory: \u001b[35m~/Desktop/darren1192.github.io/\u001b[39m","time":"2018-10-18T07:35:20.781Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Config loaded: \u001b[35m~/Desktop/darren1192.github.io/_config.yml\u001b[39m","time":"2018-10-18T07:35:20.908Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Plugin loaded: \u001b[35mhexo-deployer-git\u001b[39m","time":"2018-10-18T07:35:20.946Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Plugin loaded: \u001b[35mhexo-generator-category\u001b[39m","time":"2018-10-18T07:35:20.951Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Plugin loaded: \u001b[35mhexo-generator-archive\u001b[39m","time":"2018-10-18T07:35:20.954Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Plugin loaded: \u001b[35mhexo-generator-index\u001b[39m","time":"2018-10-18T07:35:20.957Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Plugin loaded: \u001b[35mhexo-generator-tag\u001b[39m","time":"2018-10-18T07:35:20.960Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Plugin loaded: \u001b[35mhexo-renderer-ejs\u001b[39m","time":"2018-10-18T07:35:20.964Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Plugin loaded: \u001b[35mhexo-renderer-marked\u001b[39m","time":"2018-10-18T07:35:20.970Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Plugin loaded: \u001b[35mhexo-server\u001b[39m","time":"2018-10-18T07:35:21.047Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Plugin loaded: \u001b[35mhexo-renderer-stylus\u001b[39m","time":"2018-10-18T07:35:21.048Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/tags/button.js\u001b[39m","time":"2018-10-18T07:35:21.063Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/tags/center-quote.js\u001b[39m","time":"2018-10-18T07:35:21.064Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/merge-configs.js\u001b[39m","time":"2018-10-18T07:35:21.068Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/tags/exturl.js\u001b[39m","time":"2018-10-18T07:35:21.068Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/tags/full-image.js\u001b[39m","time":"2018-10-18T07:35:21.069Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/tags/label.js\u001b[39m","time":"2018-10-18T07:35:21.069Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/tags/note.js\u001b[39m","time":"2018-10-18T07:35:21.070Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/tags/lazy-image.js\u001b[39m","time":"2018-10-18T07:35:21.070Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/tags/tabs.js\u001b[39m","time":"2018-10-18T07:35:21.071Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/tags/group-pictures.js\u001b[39m","time":"2018-10-18T07:35:21.074Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Script loaded: \u001b[35mthemes/next/scripts/merge.js\u001b[39m","time":"2018-10-18T07:35:21.083Z","v":0}
+{"name":"hexo","hostname":"share2glory.local","pid":3869,"level":20,"msg":"Database saved","time":"2018-10-18T07:35:21.088Z","v":0}
