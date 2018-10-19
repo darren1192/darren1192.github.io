@@ -296,6 +296,37 @@
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.5k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6 分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -314,43 +345,21 @@
       
         
           
-            <p>在这篇中，简单介绍一下RxSwift的核心内容，首先献祭上一张图：<br><img src="https://upload-images.jianshu.io/upload_images/2855070-90edfb06fc5c1b73.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="RxSwiftCore.png"></p>
-<ul>
-<li>Observable:产生事件</li>
-<li>Observer: 响应事件</li>
-<li>Operator:创建变化组合事件</li>
-<li>Disposable:管理绑定（订阅）的生命周期</li>
-<li>Schedulers:线程队列调配<h2 id="Observable-可被监听的序列"><a href="#Observable-可被监听的序列" class="headerlink" title="Observable 可被监听的序列"></a>Observable 可被监听的序列</h2>Observable实质上就是一个Sequence。序列分为有穷序列和无穷序列，主要就是用来形成一条数据流。比如说：我们通过nickname和password向服务器请求用户信息，它就是一个有穷数列，当数据传输完毕，这个序列就闭合了。当我们去监测某个按钮的点击，我们不知道会点击多少次，这就是无穷序列。而我们所有的操作产生的数据都会通过Observable传输。<br>Observable<t> 这个类就是Rx 框架的基础，我们称它为可观察序列。它的作用就是可以异步地产生一系列的 Event（事件），即一个 Observable<t> 对象会随着时间推移不定期地发出 event(element : T) 。<br>举个🌰：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable.of(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;)</span><br><span class="line">observable.subscribe(onNext: &#123; element in</span><br><span class="line">print(element)</span><br><span class="line">&#125;, onError: &#123; error in</span><br><span class="line">print(error)</span><br><span class="line">&#125;, onCompleted: &#123;</span><br><span class="line">print(&quot;completed&quot;)</span><br><span class="line">&#125;, onDisposed: &#123;</span><br><span class="line">print(&quot;disposed&quot;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-</t></t></li>
-</ul>
-<p>这里subscribe后面的onNext,onError, onCompleted 分别响应我们创建 json 时，构建函数里面的onNext,onError, onCompleted 事件。我们称这些事件为 Event。<br>Event的定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public enum Event&lt;Element&gt; &#123;</span><br><span class="line">/// Next element is produced.</span><br><span class="line">case next(Element)</span><br><span class="line">/// Sequence terminated with an error.</span><br><span class="line">case error(Swift.Error)</span><br><span class="line">/// Sequence completed successfully.</span><br><span class="line">case completed</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>可以看出Event就是一个枚举，也就是说一个 Observable 是可以发出 3 种不同类型的 Event 事件。</p>
-<ul>
-<li>next:序列产生了一个新的元素</li>
-<li>error:创建序列时产生了一个错误，导致序列终止</li>
-<li>completed:序列的所有元素都已经成功产生，整个序列已经完成<br>我们通过这些Event实现业务逻辑。<h2 id="Observer-观察者"><a href="#Observer-观察者" class="headerlink" title="Observer 观察者"></a>Observer 观察者</h2>观察者（Observer）的作用就是监听事件，然后对这个事件做出响应，或者说任何响应事件的行为都是观察者。比如：</li>
-<li>当前视频播放到30分钟时，弹出视频小剧场(广告)，后者就是观察者。</li>
-<li>当前温度高于30度，打开空调降温，后者就是观察者。</li>
-<li>当你点击视频拍摄时，系统弹出弹框问你是否同意使用摄像头，后者就是观察者。</li>
-<li>······<br>举个🌰：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tap.subscribe(onNext: &#123; [weak self] in</span><br><span class="line">self?.showAlert()</span><br><span class="line">&#125;, onError: &#123; error in</span><br><span class="line">print(&quot;发生错误： \(error.localizedDescription)&quot;)</span><br><span class="line">&#125;, onCompleted: &#123;</span><br><span class="line">print(&quot;任务完成&quot;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>在这里，弹出提示框就是观察者。<br>创建观察者最直接的方法就是在 Observable 的 subscribe 方法后面描述，事件发生时，需要如何做出响应。而观察者就是由后面的 onNext，onError，onCompleted的这些闭包构建出来的。此外，我们还有AnyObserver、Binder方式创建观察者。</p>
-<h2 id="Operator-操作符"><a href="#Operator-操作符" class="headerlink" title="Operator  操作符"></a>Operator  操作符</h2><p>操作符可以帮助大家创建新的序列，或者变化组合原有的序列，从而生成一个新的序列。可以对比一下Swift中的高阶函数。具体使用方法暂不做介绍，只举个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let obserable = Observable&lt;Int&gt;.of(1,2,3,4,5,6,7,8,9,10)</span><br><span class="line">obserable.filter&#123; $0 &gt; 5&#125;</span><br><span class="line">.subscribe(onNext: &#123; print($0) &#125;)</span><br><span class="line">//6 7 8 9 10</span><br></pre></td></tr></table></figure></p>
-<h2 id="Disposable-可被清除的资源"><a href="#Disposable-可被清除的资源" class="headerlink" title="Disposable  可被清除的资源"></a>Disposable  可被清除的资源</h2><p>一个 Observable 序列被创建出来后它不会马上就开始被激活从而发出 Event，而是要等到它被某个人订阅了才会激活它。激活之后要一直等到它发出了.error或者 .completed的 event 后，它才被终结。而如果我们想提前释放这些资源或者取消订阅的话，可以对返回的可被清除的资源（Disposable） 调用 dispose 方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var disposable: Disposable?</span><br><span class="line"></span><br><span class="line">override func viewWillAppear(_ animated: Bool) &#123;</span><br><span class="line">super.viewWillAppear(animated)</span><br><span class="line"></span><br><span class="line">self.disposable = textField.rx.text.orEmpty</span><br><span class="line">.subscribe(onNext: &#123; text in print(text) &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">override func viewWillDisappear(_ animated: Bool) &#123;</span><br><span class="line">super.viewWillDisappear(animated)</span><br><span class="line"></span><br><span class="line">self.disposable?.dispose()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>当然了，这个方法并不建议。因为Swift是使用ARC管理内存，所有推荐使用清除包（DisposeBag） 来实现这种订阅管理机制。我们可以把一个 DisposeBag对象看成一个垃圾袋，把用过的订阅行为都放进去，这个DisposeBag 就会在自己快要dealloc 的时候，对它里面的所有订阅行为都调用 dispose()方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line"></span><br><span class="line">//第1个Observable，及其订阅</span><br><span class="line">let observable1 = Observable.of(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;)</span><br><span class="line">observable1.subscribe &#123; event in</span><br><span class="line">print(event)</span><br><span class="line">&#125;.disposed(by: disposeBag)</span><br><span class="line"></span><br><span class="line">//第2个Observable，及其订阅</span><br><span class="line">let observable2 = Observable.of(1, 2, 3)</span><br><span class="line">observable2.subscribe &#123; event in</span><br><span class="line">print(event)</span><br><span class="line">&#125;.disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
-<p>此外，还有一种takeUntil，这里就不做过多描述了。</p>
-<h2 id="Schedulers-调度器"><a href="#Schedulers-调度器" class="headerlink" title="Schedulers 调度器"></a>Schedulers 调度器</h2><p>Schedulers 是 Rx 实现多线程的核心模块，它主要用于控制任务在哪个线程或队列运行。<br>在Swift中，我们写一个GCD这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 后台取得数据，主线程处理结果</span><br><span class="line">DispatchQueue.global(qos: .userInitiated).async &#123;</span><br><span class="line">let data = try? Data(contentsOf: url)</span><br><span class="line">DispatchQueue.main.async &#123;</span><br><span class="line">self.data = data</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果用RxSwift去实现，就这么写:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">let rxData: Observable&lt;Data&gt; = ...</span><br><span class="line"></span><br><span class="line">rxData</span><br><span class="line">.subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))</span><br><span class="line">.observeOn(MainScheduler.instance)</span><br><span class="line">.subscribe(onNext: &#123; [weak self] data in</span><br><span class="line">self?.data = data</span><br><span class="line">&#125;)</span><br><span class="line">.disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
-<p>在这里，我们用subscribeOn来决定数据序列的构建函数在哪个 Scheduler 上运行，用observeOn来决定在哪个 Scheduler 监听这个数据序列。比如说：在后台发起网络请求，然后解析数据，最后在主线程刷新页面。你就可以先用 subscribeOn切到后台去发送请求并解析数据，最后用 observeOn切换到主线程更新页面。此外，我们来应该了解：</p>
-<ul>
-<li>MainScheduler：代表主线程。如果你需要执行一些和 UI 相关的任务，就需要切换到该 Scheduler 运行。</li>
-<li>SerialDispatchQueueScheduler：抽象了串行 DispatchQueue。如果你需要执行一些串行任务，可以切换到这个 Scheduler 运行。</li>
-<li>ConcurrentDispatchQueueScheduler：抽象了并行 DispatchQueue。如果你需要执行一些并发任务，可以切换到这个 Scheduler 运行。</li>
-<li>OperationQueueScheduler：抽象了 NSOperationQueue。它具备 NSOperationQueue 的一些特点，例如，你可以通过设置maxConcurrentOperationCount，来控制同时执行并发任务的最大数量。</li>
-</ul>
+          在这篇中，简单介绍一下RxSwift的核心内容，首先献祭上一张图：
 
-          
+Observable:产生事件
+Observer: 响应事件
+Operator:创建变化组合事件
+Disposable:管理绑定（订阅）的生命周期
+Schedulers:线程队列调配Observable 可被监听的序列Observ
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/19/RxSwift-核心/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -450,6 +459,37 @@
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  735 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2 分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -468,26 +508,16 @@
       
         
           
-            <h2 id="开篇扯淡："><a href="#开篇扯淡：" class="headerlink" title="开篇扯淡："></a>开篇扯淡：</h2><p>&emsp;&emsp;为什么入RxSwift这个坑？因为我作为一个iOSer，主要语言是swift，日常开发已经很少使用OC。随着产品代码量日益增加，准备从MVC转成MVVM，而MVVM最搭配的就是RxSwift。所以，作为我个人来说，入RxSwift这个坑，还是比较合情合理的。</p>
-<h2 id="正经内容："><a href="#正经内容：" class="headerlink" title="正经内容："></a>正经内容：</h2><h3 id="ReactiveX是什么"><a href="#ReactiveX是什么" class="headerlink" title="ReactiveX是什么"></a>ReactiveX是什么</h3><p><a href="http://reactivex.io/" target="_blank" rel="noopener">ReactiveX</a>（简写: Rx）是一个可以帮助我们简化异步编程的框架.<br>它拓展了<a href="https://zh.wikipedia.org/wiki/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">观察者模式</a>。使你能够自由组合多个异步事件，而不需要去关心线程，同步，线程安全，并发数据以及I/O阻塞。</p>
-<h3 id="什么是RxSwift"><a href="#什么是RxSwift" class="headerlink" title="什么是RxSwift"></a>什么是RxSwift</h3><p><a href="https://github.com/ReactiveX/RxSwift" target="_blank" rel="noopener">RxSwift</a> 是 <a href="https://github.com/Reactive-Extensions/Rx.NET" target="_blank" rel="noopener">Rx</a> 的 <strong>Swift</strong> 版本，它尝试将原有的一些概念移植到 iOS/macOS 平台。</p>
-<h3 id="为什么要使用RxSwift"><a href="#为什么要使用RxSwift" class="headerlink" title="为什么要使用RxSwift"></a>为什么要使用RxSwift</h3><blockquote>
-<p>复合 - Rx 就是复合的代名词<br>复用 - 因为它易复合<br>清晰 - 因为声明都是不可变更的<br>易用 - 因为它抽象的了异步编程，使我们统一了代码风格<br>稳定 - 因为 Rx 是完全通过单元测试的  </p>
-</blockquote>
-<p>当然了，上面都是假大空，具体来说<br>在编写代码时我们经常会需要检测某些值的变化，然后进行相应的处理。比如说按钮的点击事件、textFiled值的变化、tableView中cell的点击事件等等。在日常搬砖中，我们针对不同的情况，需要采用不同的事件传递方法去处理，比如<strong>delegate</strong>、<strong>notifinotion</strong>、<strong>target-action</strong>、<strong>KVO</strong>等等。<br>而在RxSwift中，让程序里的事件传递响应方法做到统一，全部采用Rx的“信号链”方式。举个🌰：<br><strong>Target Action</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">button.addTarget(self, action: #selector(buttonEvent), for: .touchUpInside)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@objc func buttonEvent()&#123;</span><br><span class="line">    print(&quot;button Event&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>用Rx实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">button.rx.tap.subscribe(onNext: &#123; () in</span><br><span class="line">    print(&quot;button event&quot;)</span><br><span class="line">&#125;, onError: nil, onCompleted: nil, onDispo</span><br><span class="line">sed: nil)</span><br></pre></td></tr></table></figure></p>
-<p>这样一来，代码逻辑清晰可见。<br>当然了，为了MVVM，还是很有学习RxSwift的必要的。</p>
-<h4 id="RxSwift地址与安装"><a href="#RxSwift地址与安装" class="headerlink" title="RxSwift地址与安装"></a>RxSwift地址与安装</h4><p>传送门：<a href="https://link.jianshu.com/?t=https%3A%2F%2Fgithub.com%2FReactiveX%2FRxSwift" target="_blank" rel="noopener">GitHub</a><br>这里面啥都有，无需多言。</p>
-<h4 id="RxSwift-与-RxCocoa"><a href="#RxSwift-与-RxCocoa" class="headerlink" title="RxSwift 与 RxCocoa"></a>RxSwift 与 RxCocoa</h4><p>RxSwift在日常使用中，需要import<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import RxCocoa</span><br><span class="line">import RxSwift</span><br></pre></td></tr></table></figure></p>
-<p>这个两个库的作用分别是：</p>
-<ul>
-<li>RxSwift：它只是基于 Swift 语言的 Rx 标准实现接口库，所以 RxSwift 里不包含任何 Cocoa 或者 UI方面的类。</li>
-<li>RxCocoa：是基于 RxSwift针对于 iOS开发的一个库，它通过 Extension 的方法给原生的比如 UI 控件添加了 Rx 的特性，使得我们更容易订阅和响应这些控件的事件。</li>
-</ul>
-<p>既然已经有了这个RxSwift开篇，希望自己坚持下去。虽然不太喜欢写文章，但这也不失为监督自己的一个方法。<strong>笨鸟先飞，知行合一。</strong><br>最后，感谢那些“巨人”，对于RxSwift的学习，完全是站在巨人的肩膀上，感谢他们的文章，指引了我的方向。尤其感谢<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/" target="_blank" rel="noopener">RxSwift中文文档</a>和<a href="http://www.hangge.com/" target="_blank" rel="noopener">航哥swift</a>，他们的文章，对我的帮助很大，感谢。</p>
-
-          
+          开篇扯淡：&emsp;&emsp;为什么入RxSwift这个坑？因为我作为一个iOSer，主要语言是swift，日常开发已经很少使用OC。随着产品代码量日益增加，准备从MVC转成MVVM，而MVVM最搭配的就是RxSwift。所以，作为我个人来说，入RxSwift这个坑，还是比较合情合理的。
+正经内
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/18/RxSwift-开门第一篇/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -587,6 +617,37 @@
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  561 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2 分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -605,15 +666,15 @@
       
         
           
-            <p>在看RxSwift文章的时候，有人说到了Sequence。恕小弟才疏学浅，在日常搬砖中没有使用到它，所以在此记录一下。<br>sequence是在swift3就出现的。使用它们可以返回一个无限序列。我们可以给他们一个初始值，或者初始状态，然后他们便会以懒加载的方式应用到一个闭包。方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.public func sequence&lt;T&gt;(first: T, next: @escaping (T) -&gt; T?) -&gt; UnfoldSequence&lt;T, (T?, Bool)&gt;</span><br><span class="line">2.public func sequence&lt;T, State&gt;(state: State, next: @escaping (inout State) -&gt; T?) -&gt; UnfoldSequence&lt;T, State&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="方法1："><a href="#方法1：" class="headerlink" title="方法1："></a>方法1：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public func sequence&lt;T&gt;(first: T, next: @escaping (T) -&gt; T?) -&gt; UnfoldSequence&lt;T, (T?, Bool)&gt;</span><br></pre></td></tr></table></figure>
-<p>first:从序列返回的第一个元素<br>next:一个闭包，它接受前一个sequence元素并返回下一个元素<br>举个🌰，我们想打印从1-100范围内所有的偶数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for i in sequence(first: 1, next: &#123; $0 * 2&#125;)&#123;</span><br><span class="line">    if i &gt; 100&#123;</span><br><span class="line">        break</span><br><span class="line">    &#125;</span><br><span class="line">    print(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>或者，我们也可以把处理逻辑，状态判断放在next闭包里面，🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for _ in sequence(first: 1, next: &#123;</span><br><span class="line">    print($0)</span><br><span class="line">    let value = $0 * 2</span><br><span class="line">    return value &lt;= 100 ? value : nil</span><br><span class="line">&#125;)&#123;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在文档中还有一个🌰，从某一个树节点一直向上遍历到根节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for node in sequence(first: leaf, next: &#123; $0.parent &#125;) &#123;</span><br><span class="line">    // node is leaf, then leaf.parent, then leaf.parent.parent, etc.</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="方法2："><a href="#方法2：" class="headerlink" title="方法2："></a>方法2：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public func sequence&lt;T, State&gt;(state: State, next: @escaping (inout State) -&gt; T?) -&gt; UnfoldSequence&lt;T, State&gt;</span><br></pre></td></tr></table></figure>
-<p>这个方法是设置个初始状态（可变的），后面将其传 入next 闭包改变状态，并获取下一个序列，依次类推。举个🌰：我们制定X轴Y轴最大值，列出内部所有的整点：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// 实现方法</span><br><span class="line">func cartesianSequence(xCount: Int, yCount: Int) -&gt; UnfoldSequence&lt;PointType, Int&gt;&#123;</span><br><span class="line">    // assert断言</span><br><span class="line">    assert(xCount &gt; 0 &amp;&amp; yCount &gt; 0, &quot;必须使用正整数创建序列&quot;)</span><br><span class="line">    return sequence(state: 0, next: &#123; (index: inout Int) -&gt; PointType? in</span><br><span class="line">    guard index &lt; xCount * yCount else &#123;</span><br><span class="line">        return nil</span><br><span class="line">        &#125;</span><br><span class="line">    defer&#123;</span><br><span class="line">        index += 1</span><br><span class="line">    &#125;</span><br><span class="line">    return (x: index % xCount, y :index / xCount)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line">// 调用方法</span><br><span class="line">for point in cartesianSequence(xCount: 3, yCount: 3)&#123;</span><br><span class="line">    print(&quot;x:\(point.x), y:\(point.y)&quot;)</span><br><span class="line">    /*</span><br><span class="line">    x:0, y:0 x:1, y:0 x:2, y:0</span><br><span class="line">    x:0, y:1 x:1, y:1 x:2, y:1 </span><br><span class="line">    x:0, y:2 x:1, y:2 x:2, y:2</span><br><span class="line">    */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
+          在看RxSwift文章的时候，有人说到了Sequence。恕小弟才疏学浅，在日常搬砖中没有使用到它，所以在此记录一下。sequence是在swift3就出现的。使用它们可以返回一个无限序列。我们可以给他们一个初始值，或者初始状态，然后他们便会以懒加载的方式应用到一个闭包。方法如下：121.publi
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/13/swift-Sequence/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -727,6 +788,18 @@
                     <a href="https://github.com/darren1192" target="_blank" title="GitHub">
                       
                         <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/2653035774/profile?rightmod=1&wvr=6&mod=personinfo" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-Weibo"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="wanghe1192^163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
                   </span>
                 
             </div>
