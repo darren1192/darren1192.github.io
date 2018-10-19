@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxSwift," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="过滤操作指的是从源Observable中选择特定的数据发送。 1. filterfilter操作符将通过你提供的判定方法过滤一个Observable。 12345let disposeBag = DisposeBag()Observable.of(2, 30, 22, 5, 60, 1)        .filter&amp;#123; $0 &amp;gt; 10 &amp;#125;        .subscrib">
+<meta name="keywords" content="RxSwift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxSwift 过滤操作符(Filtering Observables)">
+<meta property="og:url" content="http://yoursite.com/2018/09/26/RxSwift-过滤操作符-Filtering-Observables/index.html">
+<meta property="og:site_name" content="DarrenW">
+<meta property="og:description" content="过滤操作指的是从源Observable中选择特定的数据发送。 1. filterfilter操作符将通过你提供的判定方法过滤一个Observable。 12345let disposeBag = DisposeBag()Observable.of(2, 30, 22, 5, 60, 1)        .filter&amp;#123; $0 &amp;gt; 10 &amp;#125;        .subscrib">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-7403d9c225aec4cb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-0c5afa37f9610704.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-29bfd143ec29394e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-b8ac9409cc9bf25d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-bcadae47ddc7f71e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-ba890655a1787c13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-3e60ff6e411e234c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-439c4618a9901d45.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-509212ce29f1c102.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-b313fa33f47012ce.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-bafa66b6f115f0c9.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-10-19T07:01:23.599Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxSwift 过滤操作符(Filtering Observables)">
+<meta name="twitter:description" content="过滤操作指的是从源Observable中选择特定的数据发送。 1. filterfilter操作符将通过你提供的判定方法过滤一个Observable。 12345let disposeBag = DisposeBag()Observable.of(2, 30, 22, 5, 60, 1)        .filter&amp;#123; $0 &amp;gt; 10 &amp;#125;        .subscrib">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/2855070-7403d9c225aec4cb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/26/RxSwift-过滤操作符-Filtering-Observables/"/>
+
+
+
+
+
+  <title>RxSwift 过滤操作符(Filtering Observables) | DarrenW</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DarrenW</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/26/RxSwift-过滤操作符-Filtering-Observables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DarrenW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DarrenW">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxSwift 过滤操作符(Filtering Observables)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-26T21:30:34+08:00">
+                2018-09-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>过滤操作指的是从源<code>Observable</code>中选择特定的数据发送。</p>
+<h4 id="1-filter"><a href="#1-filter" class="headerlink" title="1. filter"></a>1. filter</h4><p><code>filter</code>操作符将通过你提供的判定方法过滤一个<code>Observable</code>。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-7403d9c225aec4cb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="filter.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(2, 30, 22, 5, 60, 1)</span><br><span class="line">        .filter&#123; $0 &gt; 10 &#125;</span><br><span class="line">        .subscribe(onNext: &#123; print( $0 )&#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure>
+<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">30</span><br><span class="line">22</span><br><span class="line">60</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-distinctUntilChanged"><a href="#2-distinctUntilChanged" class="headerlink" title="2. distinctUntilChanged"></a>2. distinctUntilChanged</h4><p><code>distinctUntilChanged</code>操作符将阻止<code>Observable</code>发出相同的元素。如果后一个元素和前一个元素是相同的，那么这个元素将不会被发出来。如果后一个元素和前一个元素不相同，那么这个元素才会被发出来。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-0c5afa37f9610704.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="distinctUntilChanged.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(1, 2, 2, 1, 3)</span><br><span class="line">        .distinctUntilChanged()</span><br><span class="line">        .subscribe(onNext: &#123; print($0) &#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">1</span><br><span class="line">3</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-single"><a href="#3-single" class="headerlink" title="3. single"></a>3. single</h4><ul>
+<li>限制只发送一次事件，或者满足条件的第一个事件。</li>
+<li>如果存在有多个事件或者没有事件都会发出一个<code>error</code>事件。</li>
+<li>如果只有一个事件，则不会发出<code>error</code>事件</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/2855070-29bfd143ec29394e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="single.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(1, 2, 3, 4, 4, 4, 5)</span><br><span class="line">        .single()</span><br><span class="line">        .subscribe(onNext: &#123;print($0)&#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br><span class="line"></span><br><span class="line">Observable.of(&quot;A&quot;)</span><br><span class="line">        .single()</span><br><span class="line">        .subscribe(onNext: &#123;print($0)&#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">Unhandled error happened: Sequence contains more than one element.</span><br><span class="line">subscription called from:</span><br><span class="line">A</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-elementAt"><a href="#4-elementAt" class="headerlink" title="4. elementAt"></a>4. elementAt</h4><p><code>elementAt</code>操作符将拉取<code>Observable</code>序列中指定索引数的元素，然后将它作为唯一的元素发出。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-b8ac9409cc9bf25d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="elementAt.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(1, 2, 3, 4)</span><br><span class="line">        .elementAt(2)</span><br><span class="line">        .subscribe(onNext: &#123;print($0)&#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3</span><br></pre></td></tr></table></figure></p>
+<h4 id="5-ignoreElements"><a href="#5-ignoreElements" class="headerlink" title="5. ignoreElements"></a>5. ignoreElements</h4><ul>
+<li>该操作符可以忽略掉所有的元素，只发出<code>error</code>或<code>completed</code>事件。</li>
+<li>如果我们并不关心<code>Observable</code>的任何元素，只想知道<code>Observable</code>在什么时候终止，那就可以使用<code>ignoreElements</code>操作符。</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/2855070-bcadae47ddc7f71e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ignoreElements.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(1, 2, 3, 4, 4, 4, 5)</span><br><span class="line">        .ignoreElements()</span><br><span class="line">        .subscribe&#123; print($0) &#125;</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">completed</span><br></pre></td></tr></table></figure></p>
+<h4 id="6-take"><a href="#6-take" class="headerlink" title="6.take"></a>6.take</h4><p>该方法实现仅发送<code>Observable</code>序列中的前<code>n</code>个事件，在满足数量之后会自动<code>.completed</code><br><img src="https://upload-images.jianshu.io/upload_images/2855070-ba890655a1787c13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="take.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(1, 2, 3, 4)</span><br><span class="line">        .take(2)</span><br><span class="line">        .subscribe(onNext: &#123;print($0)&#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure></p>
+<h4 id="7-takeLast"><a href="#7-takeLast" class="headerlink" title="7. takeLast"></a>7. takeLast</h4><p>该方法实现仅发送<code>Observable</code>序列中的后<code>n</code>个事件<br><img src="https://upload-images.jianshu.io/upload_images/2855070-3e60ff6e411e234c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="takeLast.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(1, 2, 3, 4)</span><br><span class="line">        .takeLast(1)</span><br><span class="line">        .subscribe(onNext: &#123;print($0)&#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4</span><br></pre></td></tr></table></figure></p>
+<h4 id="8-skip"><a href="#8-skip" class="headerlink" title="8. skip"></a>8. skip</h4><p>该方法用于跳过源<code>Observable</code>序列发出的前<code>n</code>个事件。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-439c4618a9901d45.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="skip.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(1, 2, 3, 4)</span><br><span class="line">        .skip(2)</span><br><span class="line">        .subscribe(onNext: &#123; print($0) &#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">3</span><br><span class="line">4</span><br></pre></td></tr></table></figure></p>
+<h4 id="9-Sample"><a href="#9-Sample" class="headerlink" title="9. Sample"></a>9. Sample</h4><ul>
+<li><code>Sample</code>除了订阅源<code>Observable</code>外，还可以监视另外一个<code>Observable</code>， 即<code>notifier</code>。<br>每当收到<code>notifier</code>事件，就会从源序列取一个最新的事件并发送。而如果两次<code>notifier</code>事件之间没有源序列的事件，则不发送值。</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/2855070-509212ce29f1c102.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="sample.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line"></span><br><span class="line">let source = PublishSubject&lt;Int&gt;()</span><br><span class="line">let notifier = PublishSubject&lt;String&gt;()</span><br><span class="line"></span><br><span class="line">source.sample(notifier)</span><br><span class="line">        .subscribe(onNext: &#123;print($0)&#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br><span class="line"></span><br><span class="line">source.onNext(1)</span><br><span class="line"></span><br><span class="line">notifier.onNext(&quot;A&quot;)</span><br><span class="line"></span><br><span class="line">source.onNext(2)</span><br><span class="line"></span><br><span class="line">notifier.onNext(&quot;B&quot;)</span><br><span class="line">notifier.onNext(&quot;C&quot;)</span><br><span class="line"></span><br><span class="line">source.onNext(3)</span><br><span class="line">source.onNext(4)</span><br><span class="line"></span><br><span class="line">notifier.onNext(&quot;D&quot;)</span><br><span class="line"></span><br><span class="line">source.onNext(5)</span><br><span class="line"></span><br><span class="line">notifier.onCompleted()</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td></tr></table></figure></p>
+<h4 id="10-debounce"><a href="#10-debounce" class="headerlink" title="10. debounce"></a>10. debounce</h4><ul>
+<li><code>debounce</code>操作符可以用来<em>过滤掉高频产生的元素</em>，它只会发出这种元素：该元素产生后，一段时间内没有新元素产生。</li>
+<li>换句话说就是，队列中的元素如果和下一个元素的间隔小于了指定的时间间隔，那么这个元素将被过滤掉。</li>
+<li><code>debounce</code>常用在<em>用户输入</em>的时候，不需要每个字母敲进去都发送一个事件，而是稍等一下取最后一个事件。</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/2855070-b313fa33f47012ce.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="debounce.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line"></span><br><span class="line">//定义好每个事件里的值以及发送的时间</span><br><span class="line">let times = [</span><br><span class="line">[ &quot;value&quot;: 1, &quot;time&quot;: 0.1 ],</span><br><span class="line">[ &quot;value&quot;: 2, &quot;time&quot;: 1.1 ],</span><br><span class="line">[ &quot;value&quot;: 3, &quot;time&quot;: 1.2 ],</span><br><span class="line">[ &quot;value&quot;: 4, &quot;time&quot;: 1.2 ],</span><br><span class="line">[ &quot;value&quot;: 5, &quot;time&quot;: 1.4 ],</span><br><span class="line">[ &quot;value&quot;: 6, &quot;time&quot;: 2.1 ]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">//生成对应的 Observable 序列并订阅</span><br><span class="line">Observable.from(times)</span><br><span class="line">        .flatMap &#123; item in</span><br><span class="line">            return Observable.of(Int(item[&quot;value&quot;]!))</span><br><span class="line">                            .delaySubscription(Double(item[&quot;time&quot;]!),scheduler: MainScheduler.instance)</span><br><span class="line">                &#125;</span><br><span class="line">        .debounce(0.5, scheduler: MainScheduler.instance) //只发出与下一个间隔超过0.5秒的元素</span><br><span class="line">        .subscribe&#123; print($0) &#125;</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure>
+<p>运行结果……为啥我啥也没打印出来？？？<br><img src="https://upload-images.jianshu.io/upload_images/2855070-bafa66b6f115f0c9.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="u=4240739968,2514380758&amp;fm=27&amp;gp=0.jpg"><br>这个留在下回思考……<br>但据可靠信息，咳咳咳，打印出来的应该是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxSwift/" rel="tag"># RxSwift</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/25/RxSwift-变换操作-Transforming-Observables/" rel="next" title="RxSwift 变换操作(Transforming Observables)">
+                <i class="fa fa-chevron-left"></i> RxSwift 变换操作(Transforming Observables)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/27/RxSwift-条件和布尔操作符-Conditional-and-Boolean-Operators/" rel="prev" title="RxSwift 条件和布尔操作符(Conditional and Boolean Operators)">
+                RxSwift 条件和布尔操作符(Conditional and Boolean Operators) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">DarrenW</p>
+              <p class="site-description motion-element" itemprop="description">笨鸟先飞，知行合一。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/darren1192" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-filter"><span class="nav-number">1.</span> <span class="nav-text">1. filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-distinctUntilChanged"><span class="nav-number">2.</span> <span class="nav-text">2. distinctUntilChanged</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-single"><span class="nav-number">3.</span> <span class="nav-text">3. single</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-elementAt"><span class="nav-number">4.</span> <span class="nav-text">4. elementAt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-ignoreElements"><span class="nav-number">5.</span> <span class="nav-text">5. ignoreElements</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-take"><span class="nav-number">6.</span> <span class="nav-text">6.take</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-takeLast"><span class="nav-number">7.</span> <span class="nav-text">7. takeLast</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-skip"><span class="nav-number">8.</span> <span class="nav-text">8. skip</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-Sample"><span class="nav-number">9.</span> <span class="nav-text">9. Sample</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-debounce"><span class="nav-number">10.</span> <span class="nav-text">10. debounce</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DarrenW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

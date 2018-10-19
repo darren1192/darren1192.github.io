@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxSwift," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="上一篇已经介绍了Observable是什么，现在简单介绍一下它怎么创建，以及RxSwift里面Observable存在的一些特征序列。 常见的创建方法just() 方法该方法通过传入一个默认值完成初始化，并指定了当前Observable所发出事件携带的数据类型1let observable = Observable&amp;lt;Int&amp;gt;.just(1) of()方法该方法可以接受多个参数来创建实例">
+<meta name="keywords" content="RxSwift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxSwift Observable-可观察序列">
+<meta property="og:url" content="http://yoursite.com/2018/09/20/RxSwift-Observable-可观察序列/index.html">
+<meta property="og:site_name" content="DarrenW">
+<meta property="og:description" content="上一篇已经介绍了Observable是什么，现在简单介绍一下它怎么创建，以及RxSwift里面Observable存在的一些特征序列。 常见的创建方法just() 方法该方法通过传入一个默认值完成初始化，并指定了当前Observable所发出事件携带的数据类型1let observable = Observable&amp;lt;Int&amp;gt;.just(1) of()方法该方法可以接受多个参数来创建实例">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-10-19T07:01:23.597Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxSwift Observable-可观察序列">
+<meta name="twitter:description" content="上一篇已经介绍了Observable是什么，现在简单介绍一下它怎么创建，以及RxSwift里面Observable存在的一些特征序列。 常见的创建方法just() 方法该方法通过传入一个默认值完成初始化，并指定了当前Observable所发出事件携带的数据类型1let observable = Observable&amp;lt;Int&amp;gt;.just(1) of()方法该方法可以接受多个参数来创建实例">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/20/RxSwift-Observable-可观察序列/"/>
+
+
+
+
+
+  <title>RxSwift Observable-可观察序列 | DarrenW</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DarrenW</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/20/RxSwift-Observable-可观察序列/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DarrenW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DarrenW">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxSwift Observable-可观察序列</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-20T22:25:46+08:00">
+                2018-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://darren1192.github.io/2018/09/19/RxSwift-%E6%A0%B8%E5%BF%83/#more" target="_blank" rel="noopener">上一篇</a>已经介绍了<code>Observable</code>是什么，现在简单介绍一下它怎么创建，以及<code>RxSwift</code>里面<code>Observable</code>存在的一些特征序列。</p>
+<h3 id="常见的创建方法"><a href="#常见的创建方法" class="headerlink" title="常见的创建方法"></a>常见的创建方法</h3><h4 id="just-方法"><a href="#just-方法" class="headerlink" title="just() 方法"></a>just() 方法</h4><p>该方法通过传入一个默认值完成初始化，并指定了当前<code>Observable</code>所发出事件携带的数据类型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable&lt;Int&gt;.just(1)</span><br></pre></td></tr></table></figure></p>
+<h4 id="of-方法"><a href="#of-方法" class="headerlink" title="of()方法"></a>of()方法</h4><p>该方法可以接受多个参数来创建实例，但这些参数必须是同类型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable.of(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="from-方法"><a href="#from-方法" class="headerlink" title="from()方法"></a>from()方法</h4><p>该方法只接收数组作为参数，并抽取出数组里的元素来作为数据流中的元素<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable.from([&quot;A&quot;, &quot;B&quot;, &quot;C&quot;])</span><br></pre></td></tr></table></figure></p>
+<h4 id="never-方法"><a href="#never-方法" class="headerlink" title="never()方法"></a>never()方法</h4><p>该方法创建一个永远不会发出<code>Event</code>（也不会终止）的 <code>Observable</code>序列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable&lt;Int&gt;.never()</span><br></pre></td></tr></table></figure></p>
+<h4 id="empty-方法"><a href="#empty-方法" class="headerlink" title="empty()方法"></a>empty()方法</h4><p>该方法创建一个空内容的<code>Observable</code>序列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable&lt;Int&gt;.empty()</span><br></pre></td></tr></table></figure></p>
+<h4 id="error-方法"><a href="#error-方法" class="headerlink" title="error() 方法"></a>error() 方法</h4><p>该方法创建一个不做任何操作，而是直接发送一个错误的<code>Observable</code>序列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">enum MyError: Error &#123;</span><br><span class="line">    case A</span><br><span class="line">    case B</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let observable = Observable&lt;Int&gt;.error(MyError.A)</span><br></pre></td></tr></table></figure></p>
+<h4 id="range-方法"><a href="#range-方法" class="headerlink" title="range() 方法"></a>range() 方法</h4><p>该方法通过指定起始和结束数值，创建一个以这个范围内所有值作为初始值的<code>Observable</code>序列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable.range(start: 1, count: 5)</span><br></pre></td></tr></table></figure></p>
+<h4 id="repeatElement-方法"><a href="#repeatElement-方法" class="headerlink" title="repeatElement() 方法"></a>repeatElement() 方法</h4><p>该方法创建一个可以无限发出给定元素的<code>Event</code>的<code>Observable</code>序列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable.repeatElement(1)</span><br></pre></td></tr></table></figure></p>
+<h4 id="generate-方法"><a href="#generate-方法" class="headerlink" title="generate() 方法"></a>generate() 方法</h4><p>该方法创建一个只有当提供的所有的判断条件都为 true 的时候，才会给出动作的<code>Observable</code>序列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable.generate(</span><br><span class="line">    initialState: 0,</span><br><span class="line">    condition: &#123; $0 &lt;= 10 &#125;,</span><br><span class="line">    iterate: &#123; $0 + 2 &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<h4 id="interval-方法"><a href="#interval-方法" class="headerlink" title="interval() 方法"></a>interval() 方法</h4><p>这个方法创建的<code>Observable</code>序列每隔一段设定的时间，会发出一个索引数的元素。而且它会一直发送下去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable&lt;Int&gt;.interval(1, scheduler: MainScheduler.instance)</span><br><span class="line">observable.subscribe &#123; event in</span><br><span class="line">    print(event)</span><br><span class="line">//next(0) next(1) next(2)......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="timer-方法"><a href="#timer-方法" class="headerlink" title="timer() 方法"></a>timer() 方法</h4><ul>
+<li><p>创建的<code>Observable</code>序列在经过设定的一段时间后，产生唯一的一个元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//10秒种后发出唯一的一个元素0</span><br><span class="line">let observable = Observable&lt;Int&gt;.timer(10, scheduler: MainScheduler.instance)</span><br><span class="line">observable.subscribe &#123; event in</span><br><span class="line">    print(event)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建的<code>Observable</code>序列在经过设定的一段时间后，每隔一段时间产生一个元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//延时10秒种后，每隔1秒钟发出一个元素</span><br><span class="line">let observable = Observable&lt;Int&gt;.timer(10, period: 1, scheduler: MainScheduler.instance)</span><br><span class="line">    observable.subscribe &#123; event in</span><br><span class="line">    print(event)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="create-方法"><a href="#create-方法" class="headerlink" title="create()方法"></a>create()方法</h4><p>该方法接受一个<code>block</code>形式的参数，任务是对每一个过来的订阅进行处理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let observable = Observable&lt;String&gt;.create &#123; (observer) -&gt; Disposable in</span><br><span class="line">    observer.onNext(&quot;test&quot;)</span><br><span class="line">    observer.onCompleted()</span><br><span class="line">    return Disposables.create()</span><br><span class="line">&#125;</span><br><span class="line">observable.subscribe &#123; (element) in</span><br><span class="line">    print(element)</span><br><span class="line">&#125;</span><br><span class="line">//next(test)</span><br><span class="line">//completed</span><br></pre></td></tr></table></figure></p>
+<h4 id="deferred-方法"><a href="#deferred-方法" class="headerlink" title="deferred() 方法"></a>deferred() 方法</h4><p>该个方法相当于是创建一个<code>Observable</code>工厂，通过传入一个<code>block</code>来执行延迟<code>Observable</code>序列创建的行为，而这个<code>block</code>里就是真正的实例化序列对象的地方<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">var time = 0</span><br><span class="line">let factory: Observable&lt;Int&gt; = Observable.deferred &#123;</span><br><span class="line">    time += 1</span><br><span class="line">    return Observable.just(time)</span><br><span class="line">&#125;</span><br><span class="line">factory.subscribe &#123; (event) in</span><br><span class="line">    print(event)</span><br><span class="line">&#125;</span><br><span class="line">factory.subscribe &#123; (event) in</span><br><span class="line">    print(event)</span><br><span class="line">&#125;</span><br><span class="line">factory.subscribe &#123; (event) in</span><br><span class="line">    print(event)</span><br><span class="line">&#125;</span><br><span class="line">factory.subscribe &#123; (event) in</span><br><span class="line">    print(event)</span><br><span class="line">&#125;</span><br><span class="line">/* </span><br><span class="line">打印结果</span><br><span class="line">next(1)</span><br><span class="line">completed</span><br><span class="line">next(2)</span><br><span class="line">completed</span><br><span class="line">next(3)</span><br><span class="line">completed</span><br><span class="line">next(4)</span><br><span class="line">completed</span><br><span class="line">*/</span><br></pre></td></tr></table></figure></p>
+<h3 id="特征序列"><a href="#特征序列" class="headerlink" title="特征序列"></a>特征序列</h3><p><code>Swift</code>是一个强类型语言，它相对弱类型语言更加严谨。我们可以通过类型来判断出，实例有哪些特征。同样的在<code>RxSwift</code> 里面<code>Observable</code>也存在一些特征序列，这些特征序列可以帮助我们更准确的描述序列。并且它们还可以给我们提供语法糖，让我们能够用更加优雅的方式书写代码，他们分别是<code>Single</code>、<code>Completable</code>、<code>Maybe</code>、<code>Driver</code>、<code>ControlEvent</code>、<code>ControlProperty</code></p>
+<h4 id="Single"><a href="#Single" class="headerlink" title="Single"></a>Single</h4><p><code>Single</code>,在<code>RxSwift</code>中,对它的解释是<em>Represents a push style sequence containing 1 element</em>，它要么只能发出一个元素，要么产生一个<code>error</code>事件</p>
+<ul>
+<li>发出一个元素或一个<code>error</code>事件</li>
+<li>不会共享状态变化<br>附：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public enum SingleEvent&lt;Element&gt; &#123;</span><br><span class="line">case success(Element)</span><br><span class="line">case error(Swift.Error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>比如说，我们利用<code>Single</code>实现一个网络请求，返回成功的结果或失败:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">func getReop(_ repo: String) -&gt; Single&lt;[String: Any]&gt;&#123;</span><br><span class="line">    return Single&lt;[String: Any]&gt;.create(subscribe: &#123; (single) -&gt; Disposable in</span><br><span class="line">        let url = URL.init(string: &quot;https://api.github.com/repos/\(repo)&quot;)!</span><br><span class="line">        let task = URLSession.shared.dataTask(with: url, completionHandler: &#123; (data, response, error) in</span><br><span class="line">            if let error = error&#123;</span><br><span class="line">                single(.error(error))</span><br><span class="line">                return</span><br><span class="line">            &#125;</span><br><span class="line">            guard let data = data,</span><br><span class="line">                let json = try? JSONSerialization.jsonObject(with: data, options: .mutableLeaves),</span><br><span class="line">                let result = json as? [String: Any] else&#123;</span><br><span class="line">                    single(.error(DataError.cantParseJSON))</span><br><span class="line">                    return</span><br><span class="line">                &#125;</span><br><span class="line">                single(.success(result))</span><br><span class="line">        &#125;)</span><br><span class="line">        task.resume()</span><br><span class="line">        return Disposables.create &#123;</span><br><span class="line">            task.cancel()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line">//与数据相关的错误类型</span><br><span class="line">enum DataError: Error &#123;</span><br><span class="line">    case cantParseJSON</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当我们想调用这个方法的时候:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">getReop(&quot;ReactiveX/RxSwift&quot;).subscribe(onSuccess: &#123; (json) in</span><br><span class="line">    print(&quot;Json:\(json)&quot;)</span><br><span class="line">&#125;) &#123; (error) in</span><br><span class="line">    print(&quot;error:\(error)&quot;)</span><br><span class="line">&#125;.disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<h4 id="Completable"><a href="#Completable" class="headerlink" title="Completable"></a>Completable</h4><p><code>Completable</code>，在<code>RxSwift</code>中，对它的解释<em>Represents a push style sequence containing 0 elements.</em>可以理解为表示包含0个元素的推送样式序列，它要么产生<code>completed</code>事件，要么产生<code>error</code>事件。</p>
+<ul>
+<li>不会发出任何元素</li>
+<li>只会发出一个<code>completed</code>事件或者一个<code>error</code>事件</li>
+<li>不会共享状态变化<br>附：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public enum CompletableEvent &#123;</span><br><span class="line">    case error(Swift.Error)  </span><br><span class="line">    case completed</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>举个🌰:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">func cacheLocally() -&gt; Completable &#123;</span><br><span class="line">    return Completable.create(subscribe: &#123; (completable) -&gt; Disposable in</span><br><span class="line">    //将数据缓存到本地（这里掠过具体的业务代码，随机成功或失败）</span><br><span class="line">    let success = (arc4random() % 2 == 0)</span><br><span class="line">    guard success else &#123;</span><br><span class="line">        completable(.error(CacheError.failedCaching))</span><br><span class="line">        return Disposables.create&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    completable(.completed)</span><br><span class="line">    return Disposables.create()</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line">enum CacheError: Error &#123;</span><br><span class="line">    case failedCaching</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cacheLocally().subscribe(onCompleted: &#123;</span><br><span class="line">    print(&quot;completed&quot;)</span><br><span class="line">&#125;) &#123; (error) in</span><br><span class="line">    print(&quot;error:\(error)&quot;)</span><br><span class="line">&#125;.disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<h4 id="Maybe"><a href="#Maybe" class="headerlink" title="Maybe"></a>Maybe</h4><p><code>MayBe</code>介于<code>Single</code>和<code>Completable</code>之间，它要么只能发出一个元素，要么产生一个<code>completed</code>事件，要么产生一个<code>error</code>事件。</p>
+<ul>
+<li>发出一个元素、或者一个<code>completed</code>事件、或者一个<code>error</code> 事件</li>
+<li>不会共享状态变化<br>附：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public enum MaybeEvent&lt;Element&gt; &#123;</span><br><span class="line">case success(Element)</span><br><span class="line">case error(Swift.Error)</span><br><span class="line">case completed</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>举个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">func generateString() -&gt; Maybe&lt;String&gt;&#123;</span><br><span class="line">    return Maybe&lt;String&gt;.create(subscribe: &#123; (maybe) -&gt; Disposable in</span><br><span class="line">    maybe(.success(&quot;success&quot;))</span><br><span class="line">    maybe(.completed)</span><br><span class="line">    maybe(.error(StringError.failedGenerate))</span><br><span class="line">    return Disposables.create()</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line">enum StringError: Error &#123;</span><br><span class="line">    case failedGenerate</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">generateString().subscribe(onSuccess: &#123; (element) in</span><br><span class="line">    print(&quot;success:\(element)&quot;)</span><br><span class="line">&#125;, onError: &#123; (error) in</span><br><span class="line">    print(&quot;error:\(error)&quot;)</span><br><span class="line">&#125;) &#123;</span><br><span class="line">    print(&quot;completed&quot;)  </span><br><span class="line">&#125;.disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<h4 id="Driver"><a href="#Driver" class="headerlink" title="Driver"></a>Driver</h4><p><code>Driver</code>准确来说是<code>RxCocoa</code>的特征序列，目标是提供一种简便的方式在 UI 层编写响应式代码。</p>
+<h5 id="为什么使用Driver"><a href="#为什么使用Driver" class="headerlink" title="为什么使用Driver"></a>为什么使用Driver</h5><p><a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/rxswift_core/observable/driver.html" target="_blank" rel="noopener">这部分我们引用RxSwift中文文档内容</a><br>我们举个例子来说明一下，为什么要使用<code>Driver</code><br>这是文档简介页的例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">let results = query.rx.text</span><br><span class="line">                    .throttle(0.3, scheduler: MainScheduler.instance)   </span><br><span class="line">                    .flatMapLatest &#123; query in</span><br><span class="line">                        fetchAutoCompleteItems(query)</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">results</span><br><span class="line">    .map &#123; &quot;\($0.count)&quot; &#125;</span><br><span class="line">    .bind(to: resultCount.rx.text)</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line"></span><br><span class="line">results</span><br><span class="line">    .bind(to: resultsTableView.rx.items(cellIdentifier: &quot;Cell&quot;)) &#123;</span><br><span class="line">    (_, result, cell) in</span><br><span class="line">    cell.textLabel?.text = &quot;\(result)&quot;</span><br><span class="line">    &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>这段代码的主要目的是：</p>
+<ul>
+<li>取出用户输入稳定后的内容</li>
+<li>向服务器请求一组结果</li>
+<li>将返回的结果绑定到两个 UI 元素上：<code>tableView</code>和 显示结果数量的<code>label</code><br>代码存在的问题：</li>
+<li>如果<code>fetchAutoCompleteItems</code>的序列产生了一个错误（网络请求失败），这个错误将取消所有绑定，当用户输入一个新的关键字时，是无法发起新的网络请求</li>
+<li>如果<code>fetchAutoCompleteItems</code>在后台返回序列，那么刷新页面也会在后台进行，这样就会出现异常崩溃</li>
+<li>返回的结果被绑定到两个 UI 元素上。那就意味着，每次用户输入一个新的关键字时，就会分别为两个 UI 元素发起 HTTP 请求，这并不是我们想要的结果<br>一个更好的方案是这样的：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">let results = query.rx.text</span><br><span class="line">    .throttle(0.3, scheduler: MainScheduler.instance)</span><br><span class="line">    .flatMapLatest &#123; query in</span><br><span class="line">        fetchAutoCompleteItems(query)</span><br><span class="line">    .observeOn(MainScheduler.instance)  // 结果在主线程返回</span><br><span class="line">    .catchErrorJustReturn([])           // 错误被处理了，这样至少不会终止整个序列</span><br><span class="line">    &#125;</span><br><span class="line">    .share(replay: 1)                           // HTTP 请求是被共享的</span><br><span class="line"></span><br><span class="line">results</span><br><span class="line">    .map &#123; &quot;\($0.count)&quot; &#125;</span><br><span class="line">    .bind(to: resultCount.rx.text)</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line"></span><br><span class="line">results</span><br><span class="line">    .bind(to: resultsTableView.rx.items(cellIdentifier: &quot;Cell&quot;)) &#123;</span><br><span class="line">    (_, result, cell) in</span><br><span class="line">        cell.textLabel?.text = &quot;\(result)&quot;</span><br><span class="line">    &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在一个大型系统内，要确保每一步不被遗漏是一件不太容易的事情。所以更好的选择是合理运用编译器和特征序列来确保这些必备条件都已经满足。<br>以下是使用<code>Driver</code>优化后的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">let results = query.rx.text.asDriver()        // 将普通序列转换为 Driver</span><br><span class="line">    .throttle(0.3, scheduler: MainScheduler.instance)</span><br><span class="line">    .flatMapLatest &#123; query in</span><br><span class="line">        fetchAutoCompleteItems(query)</span><br><span class="line">            .asDriver(onErrorJustReturn: [])  // 仅仅提供发生错误时的备选返回值</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">results</span><br><span class="line">    .map &#123; &quot;\($0.count)&quot; &#125;</span><br><span class="line">    .drive(resultCount.rx.text)               // 这里改用 `drive` 而不是 `bindTo`</span><br><span class="line">    .disposed(by: disposeBag)                 // 这样可以确保必备条件都已经满足了</span><br><span class="line"></span><br><span class="line">results</span><br><span class="line">    .drive(resultsTableView.rx.items(cellIdentifier: &quot;Cell&quot;)) &#123;</span><br><span class="line">    (_, result, cell) in</span><br><span class="line">        cell.textLabel?.text = &quot;\(result)&quot;</span><br><span class="line">    &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>首先第一个<code>asDriver</code>方法将<code>ControlProperty</code>转换为<code>Driver</code><br>然后第二个变化是:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.asDriver(onErrorJustReturn: [])</span><br></pre></td></tr></table></figure></p>
+<p>任何可被监听的序列都可以被转换为 Driver，只要他满足 3 个条件:</p>
+<ul>
+<li>不会产生 error 事件</li>
+<li>一定在 MainScheduler 监听（主线程监听）</li>
+<li>共享状态变化<br>那么要如何确定条件都被满足？通过 Rx 操作符来进行转换。asDriver(onErrorJustReturn: []) 相当于以下代码<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let safeSequence = xs</span><br><span class="line">    .observeOn(MainScheduler.instance)       // 主线程监听</span><br><span class="line">    .catchErrorJustReturn(onErrorJustReturn) // 无法产生错误</span><br><span class="line">    .share(replay: 1, scope: .whileConnected)// 共享状态变化</span><br><span class="line">return Driver(raw: safeSequence)           // 封装</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>最后使用<code>drive</code>而不是<code>bindTo</code>。</p>
+<h4 id="ControlEvent"><a href="#ControlEvent" class="headerlink" title="ControlEvent"></a>ControlEvent</h4><p><code>ControlProperty</code>是专门用来描述 UI 控件属性，拥有该类型的属性都是被观察者（<code>Observable</code>），它也是<code>RxCocoa</code>的特征序列<br><code>ControlProperty</code>具有以下特征：</p>
+<ul>
+<li>不会产生<code>error</code>事件</li>
+<li>一定在<code>MainScheduler</code>订阅（主线程订阅）</li>
+<li>一定在<code>MainScheduler</code>监听（主线程监听）</li>
+<li>共享状态变化<br>举个🌰：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import UIKit</span><br><span class="line">import RxSwift</span><br><span class="line">import RxCocoa</span><br><span class="line"></span><br><span class="line">class ViewController: UIViewController &#123;</span><br><span class="line"></span><br><span class="line">    @IBOutlet weak var textField: UITextField!</span><br><span class="line">    @IBOutlet weak var label: UILabel!</span><br><span class="line">    //负责对象销毁</span><br><span class="line">    let disposeBag = DisposeBag()</span><br><span class="line">    override func viewDidLoad() &#123;</span><br><span class="line">        super.viewDidLoad()</span><br><span class="line">        //将textField输入的文字绑定到label上</span><br><span class="line">        textField.rx.text</span><br><span class="line">            .bind(to: label.rx.text)</span><br><span class="line">            .disposed(by: disposeBag)</span><br><span class="line">        &#125;</span><br><span class="line">    override func didReceiveMemoryWarning() &#123;</span><br><span class="line">        super.didReceiveMemoryWarning()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>有人可能会纳闷，这跟<code>ControlProperty</code>有什么关系，没看到它的影子啊。我们查看<code>textField.rx.text</code>的<code>text</code>方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">extension Reactive where Base : UITextField &#123;</span><br><span class="line">public var text: ControlProperty&lt;String?&gt; &#123;</span><br><span class="line">        return value</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">public var value: ControlProperty&lt;String?&gt; &#123;</span><br><span class="line">    return base.rx.controlPropertyWithDefaultEvents(</span><br><span class="line">        getter: &#123; textField in</span><br><span class="line">        textField.text</span><br><span class="line">    &#125;,</span><br><span class="line">        setter: &#123; textField, value in</span><br><span class="line">            if textField.text != value &#123;</span><br><span class="line">            textField.text = value</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>原来UITextField 的<code>rx.text</code>属性类型便是 <code>ControlProperty&lt;String?&gt;</code><br>同时，这段代码也给我们启示，为控件添加属性，可以采用<code>extension Reactive where Base : UITextField</code>的方法。</p>
+<h4 id="ControlEvent-1"><a href="#ControlEvent-1" class="headerlink" title="ControlEvent"></a>ControlEvent</h4><p><code>ControlEvent</code>专门用于描述 UI 控件所产生的事件，它具有跟<code>ControlProperty</code>一样的特征：</p>
+<ul>
+<li>不会产生<code>error</code>事件</li>
+<li>一定在<code>MainScheduler</code>订阅（主线程订阅）</li>
+<li>一定在<code>MainScheduler</code>监听（主线程监听）</li>
+<li>共享状态变化<br>举个🌰：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import UIKit</span><br><span class="line">import RxSwift</span><br><span class="line">import RxCocoa</span><br><span class="line"></span><br><span class="line">class ViewController: UIViewController &#123;</span><br><span class="line"></span><br><span class="line">    let disposeBag = DisposeBag()</span><br><span class="line"></span><br><span class="line">    @IBOutlet weak var button: UIButton!</span><br><span class="line"></span><br><span class="line">    override func viewDidLoad() &#123;</span><br><span class="line"></span><br><span class="line">        //订阅按钮点击事件</span><br><span class="line">        button.rx.tap</span><br><span class="line">            .subscribe(onNext: &#123;</span><br><span class="line">                print(&quot;blick&quot;)</span><br><span class="line">            &#125;).disposed(by: disposeBag)</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>可能也有人会疑问，<code>ControlEvent</code>在哪？查看tap方法，会看到源码（<code>UIButton+Rx.swift</code>），这个时候就会发现 UIButton 的<code>rx.tap</code>方法类型便是<code>ControlEvent&lt;Void&gt;</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import RxSwift</span><br><span class="line">import UIKit</span><br><span class="line"></span><br><span class="line">extension Reactive where Base: UIButton &#123;</span><br><span class="line">public var tap: ControlEvent&lt;Void&gt; &#123;</span><br><span class="line">    return controlEvent(.touchUpInside)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>至此，我们就对<code>Observable</code>有了一个简单的介绍。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxSwift/" rel="tag"># RxSwift</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/19/RxSwift-核心/" rel="next" title="RxSwift 核心">
+                <i class="fa fa-chevron-left"></i> RxSwift 核心
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/21/RxSwift-Observer-观察者/" rel="prev" title="RxSwift Observer-观察者">
+                RxSwift Observer-观察者 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">DarrenW</p>
+              <p class="site-description motion-element" itemprop="description">笨鸟先飞，知行合一。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/darren1192" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的创建方法"><span class="nav-number">1.</span> <span class="nav-text">常见的创建方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#just-方法"><span class="nav-number">1.1.</span> <span class="nav-text">just() 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#of-方法"><span class="nav-number">1.2.</span> <span class="nav-text">of()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#from-方法"><span class="nav-number">1.3.</span> <span class="nav-text">from()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#never-方法"><span class="nav-number">1.4.</span> <span class="nav-text">never()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#empty-方法"><span class="nav-number">1.5.</span> <span class="nav-text">empty()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#error-方法"><span class="nav-number">1.6.</span> <span class="nav-text">error() 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#range-方法"><span class="nav-number">1.7.</span> <span class="nav-text">range() 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#repeatElement-方法"><span class="nav-number">1.8.</span> <span class="nav-text">repeatElement() 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#generate-方法"><span class="nav-number">1.9.</span> <span class="nav-text">generate() 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#interval-方法"><span class="nav-number">1.10.</span> <span class="nav-text">interval() 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#timer-方法"><span class="nav-number">1.11.</span> <span class="nav-text">timer() 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#create-方法"><span class="nav-number">1.12.</span> <span class="nav-text">create()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deferred-方法"><span class="nav-number">1.13.</span> <span class="nav-text">deferred() 方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特征序列"><span class="nav-number">2.</span> <span class="nav-text">特征序列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Single"><span class="nav-number">2.1.</span> <span class="nav-text">Single</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Completable"><span class="nav-number">2.2.</span> <span class="nav-text">Completable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Maybe"><span class="nav-number">2.3.</span> <span class="nav-text">Maybe</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Driver"><span class="nav-number">2.4.</span> <span class="nav-text">Driver</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#为什么使用Driver"><span class="nav-number">2.4.1.</span> <span class="nav-text">为什么使用Driver</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ControlEvent"><span class="nav-number">2.5.</span> <span class="nav-text">ControlEvent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ControlEvent-1"><span class="nav-number">2.6.</span> <span class="nav-text">ControlEvent</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DarrenW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

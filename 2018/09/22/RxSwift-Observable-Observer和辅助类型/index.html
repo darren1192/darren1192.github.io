@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxSwift," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在我们日常开发中，有一些既可是Observable又可是Observer。举个🌰：12let observable = textField.rx.textobservable.subscribe(onNext: &amp;#123; text in show(text: text) &amp;#125;) 在这行代码中，textField当前文本就是一个Observable，当用户在textField中输入时，">
+<meta name="keywords" content="RxSwift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxSwift Observable&amp;Observer和辅助类型">
+<meta property="og:url" content="http://yoursite.com/2018/09/22/RxSwift-Observable-Observer和辅助类型/index.html">
+<meta property="og:site_name" content="DarrenW">
+<meta property="og:description" content="在我们日常开发中，有一些既可是Observable又可是Observer。举个🌰：12let observable = textField.rx.textobservable.subscribe(onNext: &amp;#123; text in show(text: text) &amp;#125;) 在这行代码中，textField当前文本就是一个Observable，当用户在textField中输入时，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-a113479a0f2d92f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-10-19T07:01:23.597Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxSwift Observable&amp;Observer和辅助类型">
+<meta name="twitter:description" content="在我们日常开发中，有一些既可是Observable又可是Observer。举个🌰：12let observable = textField.rx.textobservable.subscribe(onNext: &amp;#123; text in show(text: text) &amp;#125;) 在这行代码中，textField当前文本就是一个Observable，当用户在textField中输入时，">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/2855070-a113479a0f2d92f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/22/RxSwift-Observable-Observer和辅助类型/"/>
+
+
+
+
+
+  <title>RxSwift Observable&Observer和辅助类型 | DarrenW</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DarrenW</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/22/RxSwift-Observable-Observer和辅助类型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DarrenW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DarrenW">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxSwift Observable&Observer和辅助类型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-22T23:49:42+08:00">
+                2018-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在我们日常开发中，有一些既可是<code>Observable</code>又可是<code>Observer</code>。举个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let observable = textField.rx.text</span><br><span class="line">observable.subscribe(onNext: &#123; text in show(text: text) &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>在这行代码中，<code>textField</code>当前文本就是一个<code>Observable</code>，当用户在<code>textField</code>中输入时，就会<code>show</code>文本内容。<br>再举个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let observer = textField.rx.text</span><br><span class="line">let observable = Observable&lt;String&gt;.just(&quot;A&quot;)</span><br><span class="line">observable.bind(to: observer)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>这个时候，屏幕上就会显示：<br><img src="https://upload-images.jianshu.io/upload_images/2855070-a113479a0f2d92f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="textField.png"><br>这时，<code>textField</code>的当前文本就是<code>Observer</code>。<br>此外，框架中还有一些辅助类型，既可是<code>Observable</code>又可是<code>Observer</code>。</p>
+<h4 id="1-AsyncSubject"><a href="#1-AsyncSubject" class="headerlink" title="1. AsyncSubject"></a>1. AsyncSubject</h4><p><code>AsyncSubject</code>将在<code>Observable</code>产生完成事件后，发出最后一个元素（仅仅只有最后一个元素）。如果<code>Observable</code>没有发出任何元素，只有一个完成事件，那<code>AsyncSubject</code>也只有一个完成事件。如果<code>Observable</code>因<code>error</code>中止，那么<code>AsyncSubject</code>只会将<code>error</code>发送出来，不会发出其它元素。<br>举个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">//创建一个AsyncSubject</span><br><span class="line">let subject = AsyncSubject&lt;String&gt;()</span><br><span class="line">//订阅subject</span><br><span class="line">subject.subscribe&#123; print($0) &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line">subject.onNext(&quot;B&quot;)</span><br><span class="line">subject.onNext(&quot;C&quot;)</span><br><span class="line">subject.onNext(&quot;D&quot;)</span><br><span class="line">subject.onCompleted()</span><br></pre></td></tr></table></figure></p>
+<p>这个时候输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">next(D)</span><br><span class="line">completed</span><br></pre></td></tr></table></figure></p>
+<p>此时我们再改造一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let subject = AsyncSubject&lt;String&gt;()</span><br><span class="line">subject.subscribe&#123; print($0) &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line">subject.onNext(&quot;B&quot;)</span><br><span class="line">subject.onNext(&quot;C&quot;)</span><br><span class="line">subject.onNext(&quot;D&quot;)</span><br><span class="line">//SubjectError 自己定义的enum Error</span><br><span class="line">subject.onError(SubjectError.error)</span><br></pre></td></tr></table></figure></p>
+<p>就会输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">error(error)</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-PublishSubject"><a href="#2-PublishSubject" class="headerlink" title="2. PublishSubject"></a>2. PublishSubject</h4><p><code>PublishSubject</code>是将对观察者发送<code>订阅后产生的元素</code>，而在订阅前发出的元素将不会发送给观察者。</p>
+<ul>
+<li><code>PublishSubject</code>是最普通的<code>Subject</code>，它不需要初始值就能创建</li>
+<li><code>PublishSubject</code>的订阅者从他们开始订阅的时间点起，可以收到订阅后<code>Subject</code>发出的新<code>Event</code>，而不会收到他们在订阅前已发出的<code>Event</code></li>
+</ul>
+<p>举个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let subject = PublishSubject&lt;String&gt;()</span><br><span class="line">//由于当前没有订阅，所以不输出</span><br><span class="line">subject.onNext(&quot;🐶&quot;)</span><br><span class="line">//第一次订阅</span><br><span class="line">subject.subscribe(onNext: &#123; (element) in</span><br><span class="line">    print(&quot;第一次订阅:\(element)&quot;)</span><br><span class="line">&#125;, onCompleted: &#123;</span><br><span class="line">    print(&quot;completed&quot;)</span><br><span class="line">&#125;).disposed(by: disposeBag)</span><br><span class="line">//当前有一个订阅，输出</span><br><span class="line">subject.onNext(&quot;🐱&quot;)</span><br><span class="line"></span><br><span class="line">//第二次订阅</span><br><span class="line">subject.subscribe(onNext: &#123; (element) in</span><br><span class="line">    print(&quot;第二次订阅:\(element)&quot;)</span><br><span class="line">&#125;, onCompleted: &#123;</span><br><span class="line">    print(&quot;completed&quot;)</span><br><span class="line">&#125;).disposed(by: disposeBag)</span><br><span class="line">//当前有两个订阅 输出</span><br><span class="line">subject.onNext(&quot;🐹&quot;)</span><br><span class="line"></span><br><span class="line">//结束subject</span><br><span class="line">subject.onCompleted()</span><br><span class="line">//再次发出.next事件</span><br><span class="line">subject.onNext(&quot;🐯&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>显示如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">第一次订阅:🐱</span><br><span class="line">第一次订阅:🐹</span><br><span class="line">第二次订阅:🐹</span><br><span class="line">第一次订阅:completed</span><br><span class="line">第二次订阅:completed</span><br><span class="line">第三次订阅:completed</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-ReplaySubject"><a href="#3-ReplaySubject" class="headerlink" title="3. ReplaySubject"></a>3. ReplaySubject</h4><p><code>ReplaySubject</code>将对观察者发送全部的元素，无论观察者是何时进行订阅的。这里存在多个版本的<code>ReplaySubject</code>，有的只会将最新的n个元素发送给观察者，有的只会将限制时间段内最新的元素发送给观察者。如果把<code>ReplaySubject</code>当作观察者来使用，注意不要在多个线程调用<code>onNext</code>,<code>onError</code>或<code>onCompleted</code>。这样会导致无序调用，将造成意想不到的结果。</p>
+<ul>
+<li><code>ReplaySubject</code>在创建时候需要设置一个<code>bufferSize</code>，表示它对于它发送过的<code>event</code>的缓存个数</li>
+<li>比如一个<code>ReplaySubject</code>的<code>bufferSize</code>设置为 2，它发出了 3 个<code>.next</code>的<code>event</code>，那么它会将后两个（最近的两个）<code>event</code>给缓存起来。此时如果有一个<code>subscriber</code>订阅了这个 <code>ReplaySubject</code>，那么这个<code>subscriber</code>就会立即收到前面缓存的两个<code>.next</code>的<code>event</code></li>
+<li>如果一个<code>subscriber</code>订阅已经结束的<code>ReplaySubject</code>，除了会收到缓存的<code>.next</code>的<code>event</code>外，还会收到那个终结的<code>.error</code>或者<code>.complete</code>的<code>event</code></li>
+</ul>
+<p>举个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">//创建</span><br><span class="line">let subject = ReplaySubject&lt;String&gt;.create(bufferSize: 0)</span><br><span class="line">//第1次订阅subject</span><br><span class="line">subject.subscribe&#123; print(&quot;第一次订阅:\($0)&quot;) &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line">//发送.next事件</span><br><span class="line">subject.onNext(&quot;A&quot;)</span><br><span class="line">subject.onNext(&quot;B&quot;)</span><br><span class="line">//第二次订阅</span><br><span class="line">subject.subscribe&#123; print(&quot;第二次订阅:\($0)&quot; )&#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line">//发送.next事件</span><br><span class="line">subject.onNext(&quot;C&quot;)</span><br><span class="line">subject.onNext(&quot;D&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">第一次订阅:next(A)</span><br><span class="line">第一次订阅:next(B)</span><br><span class="line">第一次订阅:next(C)</span><br><span class="line">第二次订阅:next(C)</span><br><span class="line">第一次订阅:next(D)</span><br><span class="line">第二次订阅:next(D)</span><br></pre></td></tr></table></figure></p>
+<p>当<code>bufferSize</code>改成1时，结果就变成了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">第一次订阅:next(A)</span><br><span class="line">第一次订阅:next(B)</span><br><span class="line">第二次订阅:next(B)</span><br><span class="line">第一次订阅:next(C)</span><br><span class="line">第二次订阅:next(C)</span><br><span class="line">第一次订阅:next(D)</span><br><span class="line">第二次订阅:next(D)</span><br></pre></td></tr></table></figure></p>
+<p>如果是2的话，结果就变成了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">第一次订阅:next(A)</span><br><span class="line">第一次订阅:next(B)</span><br><span class="line">第二次订阅:next(A)</span><br><span class="line">第二次订阅:next(B)</span><br><span class="line">第一次订阅:next(C)</span><br><span class="line">第二次订阅:next(C)</span><br><span class="line">第一次订阅:next(D)</span><br><span class="line">第二次订阅:next(D)</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-BehaviorSubject"><a href="#4-BehaviorSubject" class="headerlink" title="4. BehaviorSubject"></a>4. BehaviorSubject</h4><p><code>BehaviorSubject</code>会把<code>Observable</code>最新元素发出来（如果不存在最新的元素，就发出默认元素）。然后将随后产生的元素发送出来。如果<code>Observable</code>因为<code>error</code>事件而中止，则不会发出任何元素，将<code>error</code>事件发出来。</p>
+<ul>
+<li><code>BehaviorSubject</code>需要通过一个默认初始值来创建</li>
+<li>当一个订阅者来订阅它的时候，这个订阅者会立即收到 <code>BehaviorSubjects</code>上一个发出的<code>event</code>。之后就跟正常的情况一样，它也会接收到<code>BehaviorSubject</code>之后发出的新的<code>event</code></li>
+</ul>
+<p>举个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">//创建一个BehaviorSubject</span><br><span class="line">let subject = BehaviorSubject.init(value: &quot;🐭&quot;)</span><br><span class="line">//第一次订阅</span><br><span class="line">subject.subscribe&#123; print(&quot;第一次订阅:\($0)&quot;) &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line">//发送.next事件</span><br><span class="line">subject.onNext(&quot;🐯&quot;)</span><br><span class="line">//发送error事件</span><br><span class="line">subject.onError(NSError(domain: &quot;local&quot;, code: 0, userInfo: nil))</span><br><span class="line">//第二次订阅</span><br><span class="line">subject.subscribe&#123; print(&quot;第二次订阅:\($0)&quot;) &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">第一次订阅:next(🐭)</span><br><span class="line">第一次订阅:next(🐯)</span><br><span class="line">第一次订阅:error(Error Domain=local Code=0 &quot;(null)&quot;)</span><br><span class="line">第二次订阅:error(Error Domain=local Code=0 &quot;(null)&quot;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-Variable"><a href="#4-Variable" class="headerlink" title="4. Variable"></a>4. Variable</h4><p>在<code>RxSwift</code>中，<code>Variable</code>相当于<code>Swift</code>中的<code>var</code>。</p>
+<ul>
+<li><code>Variable</code>其实就是对<code>BehaviorSubject</code>的封装，所以它也必须要通过一个默认的初始值进行创建。</li>
+<li><code>Variable</code>具有<code>BehaviorSubject</code>的功能，能够向它的订阅者发出上一个<code>event</code>以及之后新创建的<code>event</code>。</li>
+<li>不同的是，<code>Variable</code>还会把当前发出的值保存为自己的状态。同时它会在销毁时自动发送<code>.complete</code>的<code>event</code>，不需要也不能手动给<code>Variables</code>发送<code>completed</code>或者<code>error</code>事件来结束它。</li>
+<li>简单地说就是<code>Variable</code>有一个<code>value</code>属性，我们改变这个<code>value</code>属性的值就相当于调用一般<code>Subjects</code>的<code>onNext()</code>方法，而这个最新的<code>onNext()</code>的值就被保存在<code>value</code>属性里了，直到我们再次修改它。</li>
+<li><code>Variables</code>本身没有<code>subscribe()</code>方法，但是所有<code>Subjects</code>都有一个<code>asObservable()</code>方法。我们可以使用这个方法返回这个<code>Variable</code>的<code>Observable</code>类型，拿到这个<code>Observable</code>类型我们就能订阅它了。</li>
+</ul>
+<p>举个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let variable = Variable.init(&quot;A&quot;)</span><br><span class="line">variable.value = &quot;B&quot;</span><br><span class="line">//第一次订阅</span><br><span class="line">variable.asObservable().subscribe&#123; print(&quot;第一次订阅:\($0)&quot;) &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line">//修改value</span><br><span class="line">variable.value = &quot;C&quot;</span><br><span class="line">//第二次订阅</span><br><span class="line">variable.asObservable().subscribe&#123; print(&quot;第二次订阅:\($0)&quot;) &#125;</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line">//修改value</span><br><span class="line">variable.value = &quot;D&quot;</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">第一次订阅:next(B)</span><br><span class="line">第一次订阅:next(C)</span><br><span class="line">第二次订阅:next(C)</span><br><span class="line">第一次订阅:next(D)</span><br><span class="line">第二次订阅:next(D)</span><br><span class="line">第一次订阅:completed</span><br><span class="line">第二次订阅:completed</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxSwift/" rel="tag"># RxSwift</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/21/RxSwift-Observer-观察者/" rel="next" title="RxSwift Observer-观察者">
+                <i class="fa fa-chevron-left"></i> RxSwift Observer-观察者
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/25/RxSwift-变换操作-Transforming-Observables/" rel="prev" title="RxSwift 变换操作(Transforming Observables)">
+                RxSwift 变换操作(Transforming Observables) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">DarrenW</p>
+              <p class="site-description motion-element" itemprop="description">笨鸟先飞，知行合一。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/darren1192" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-AsyncSubject"><span class="nav-number">1.</span> <span class="nav-text">1. AsyncSubject</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-PublishSubject"><span class="nav-number">2.</span> <span class="nav-text">2. PublishSubject</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-ReplaySubject"><span class="nav-number">3.</span> <span class="nav-text">3. ReplaySubject</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-BehaviorSubject"><span class="nav-number">4.</span> <span class="nav-text">4. BehaviorSubject</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Variable"><span class="nav-number">5.</span> <span class="nav-text">4. Variable</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DarrenW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

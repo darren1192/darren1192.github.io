@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxSwift," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="之前列举了很多操作符的用法，还有很多我们没有列举的。其实写了那么多操作符有时候我还是会忘记选择哪一个。这个时候，我发现在RxSwift中文文档有一篇关于选择操作符的文章。这一篇水文纯搬运。 决策树我想要创建一个 Observable  产生特定的一个元素：just 经过一段延时：timer 从一个序列拉取元素：from 重复的产生某一个元素：repeatElement 存在自定义逻辑：create">
+<meta name="keywords" content="RxSwift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxSwift 操作符决策树">
+<meta property="og:url" content="http://yoursite.com/2018/09/30/RxSwift-操作符决策树/index.html">
+<meta property="og:site_name" content="DarrenW">
+<meta property="og:description" content="之前列举了很多操作符的用法，还有很多我们没有列举的。其实写了那么多操作符有时候我还是会忘记选择哪一个。这个时候，我发现在RxSwift中文文档有一篇关于选择操作符的文章。这一篇水文纯搬运。 决策树我想要创建一个 Observable  产生特定的一个元素：just 经过一段延时：timer 从一个序列拉取元素：from 重复的产生某一个元素：repeatElement 存在自定义逻辑：create">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-10-19T07:01:23.599Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxSwift 操作符决策树">
+<meta name="twitter:description" content="之前列举了很多操作符的用法，还有很多我们没有列举的。其实写了那么多操作符有时候我还是会忘记选择哪一个。这个时候，我发现在RxSwift中文文档有一篇关于选择操作符的文章。这一篇水文纯搬运。 决策树我想要创建一个 Observable  产生特定的一个元素：just 经过一段延时：timer 从一个序列拉取元素：from 重复的产生某一个元素：repeatElement 存在自定义逻辑：create">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/30/RxSwift-操作符决策树/"/>
+
+
+
+
+
+  <title>RxSwift 操作符决策树 | DarrenW</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DarrenW</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/30/RxSwift-操作符决策树/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DarrenW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DarrenW">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxSwift 操作符决策树</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-30T21:59:24+08:00">
+                2018-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前列举了很多操作符的用法，还有很多我们没有列举的。其实写了那么多操作符有时候我还是会忘记选择哪一个。这个时候，我发现在<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree.html" target="_blank" rel="noopener">RxSwift中文文档</a>有一篇关于选择操作符的文章。这一篇水文纯搬运。</p>
+<h3 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h3><p><strong>我想要创建一个 <code>Observable</code></strong></p>
+<ul>
+<li>产生特定的一个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/just.html" target="_blank" rel="noopener">just</a></li>
+<li>经过一段延时：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/timer.html" target="_blank" rel="noopener">timer</a></li>
+<li>从一个序列拉取元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/from.html" target="_blank" rel="noopener">from</a></li>
+<li>重复的产生某一个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/repeatElement.html" target="_blank" rel="noopener">repeatElement</a></li>
+<li>存在自定义逻辑：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/create.html" target="_blank" rel="noopener">create</a></li>
+<li>每次订阅时产生：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/deferred.html" target="_blank" rel="noopener">deferred</a></li>
+<li>每隔一段时间，发出一个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/interval.html" target="_blank" rel="noopener">interval</a></li>
+<li>在一段延时后：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/timer.html" target="_blank" rel="noopener">timer</a></li>
+<li>一个空序列，只有一个完成事件：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/empty.html" target="_blank" rel="noopener">empty</a></li>
+<li>一个任何事件都没有产生的序列：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/never.html" target="_blank" rel="noopener">never</a></li>
+</ul>
+<p><strong>我想要创建一个 <code>Observable</code> 通过组合其他的 <code>Observables</code></strong></p>
+<ul>
+<li>任意一个 <code>Observable</code> 产生了元素，就发出这个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/merge.html" target="_blank" rel="noopener">merge</a></li>
+<li>让这些 <code>Observables</code> 一个接一个的发出元素，当上一个 <code>Observable</code> 元素发送完毕后，下一个<code>Observable</code> 才能开始发出元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/concat.html" target="_blank" rel="noopener">concat</a></li>
+<li>组合多个 <code>Observables</code> 的元素</li>
+<li>当每一个 <code>Observable</code> 都发出一个新的元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/zip.html" target="_blank" rel="noopener">zip</a></li>
+<li>当任意一个 <code>Observable</code> 发出一个新的元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/combineLatest.html" target="_blank" rel="noopener">combineLatest</a></li>
+</ul>
+<p><strong>我想要转换 <code>Observable</code> 的元素后，再将它们发出来</strong></p>
+<ul>
+<li>对每个元素直接转换：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/map.html" target="_blank" rel="noopener">map</a></li>
+<li>转换到另一个 <code>Observable</code>：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/flatMap.html" target="_blank" rel="noopener">flatMap</a></li>
+<li>只接收最新的元素转换的 <code>Observable</code> 所产生的元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/flatMapLatest.html" target="_blank" rel="noopener">flatMapLatest</a></li>
+<li>每一个元素转换的 <code>Observable</code> 按顺序产生元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/concatMap.html" target="_blank" rel="noopener">concatMap</a></li>
+<li>基于所有遍历过的元素： <a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/scan.html" target="_blank" rel="noopener">scan</a></li>
+</ul>
+<p><strong>我想要将产生的每一个元素，拖延一段时间后再发出：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/delay.html" target="_blank" rel="noopener">delay</a></strong></p>
+<p><strong>我想要将产生的事件封装成元素发送出来</strong></p>
+<ul>
+<li>将他们封装成 <code>Event&lt;Element&gt;</code>：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/materialize.html" target="_blank" rel="noopener">materialize</a></li>
+<li>然后解封出来：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/dematerialize.html" target="_blank" rel="noopener">dematerialize</a></li>
+</ul>
+<p><strong>我想要忽略掉所有的 <code>next</code> 事件，只接收 <code>completed</code> 和 <code>error</code> 事件：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/ignoreElements.html" target="_blank" rel="noopener">ignoreElements</a></strong></p>
+<p><strong>我想创建一个新的 <code>Observable</code> 在原有的序列前面加入一些元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/startWith.html" target="_blank" rel="noopener">startWith</a></strong></p>
+<p><strong>我想从 <code>Observable</code> 中收集元素，缓存这些元素之后在发出：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/buffer.html" target="_blank" rel="noopener">buffer</a></strong></p>
+<p><strong>我想将 <code>Observable</code> 拆分成多个 <code>Observables</code>：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/window.html" target="_blank" rel="noopener">window</a></strong></p>
+<ul>
+<li>基于元素的共同特征：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/groupBy.html" target="_blank" rel="noopener">groupBy</a></li>
+</ul>
+<p><strong>我想只接收 <code>Observable</code> 中特定的元素</strong></p>
+<ul>
+<li>发出唯一的元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/single.html" target="_blank" rel="noopener">single</a></li>
+</ul>
+<p><strong>我想重新从 <code>Observable</code> 中发出某些元素</strong></p>
+<ul>
+<li>通过判定条件过滤出一些元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/filter.html" target="_blank" rel="noopener">filter</a></li>
+<li>仅仅发出头几个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/take.html" target="_blank" rel="noopener">take</a></li>
+<li>仅仅发出尾部的几个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/takeLast.html" target="_blank" rel="noopener">takeLast</a></li>
+<li>仅仅发出第 n 个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/elementAt.html" target="_blank" rel="noopener">elementAt</a></li>
+<li>跳过头几个元素</li>
+<li>跳过头 n 个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/skip.html" target="_blank" rel="noopener">skip</a></li>
+<li>跳过头几个满足判定的元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/skipWhile.html" target="_blank" rel="noopener">skipWhile</a>，<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/skipWhile.html" target="_blank" rel="noopener">skipWhileWithIndex</a></li>
+<li>跳过某段时间内产生的头几个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/skip.html" target="_blank" rel="noopener">skip</a></li>
+<li>跳过头几个元素直到另一个 <code>Observable</code> 发出一个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/skipUntil.html" target="_blank" rel="noopener">skipUntil</a></li>
+<li>只取头几个元素</li>
+<li>只取头几个满足判定的元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/takeWhile.html" target="_blank" rel="noopener">takeWhile</a>，<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/takeWhile.html" target="_blank" rel="noopener">takeWhileWithIndex</a></li>
+<li>只取某段时间内产生的头几个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/take.html" target="_blank" rel="noopener">take</a></li>
+<li>只取头几个元素直到另一个 <code>Observable</code> 发出一个元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/takeUntil.html" target="_blank" rel="noopener">takeUntil</a></li>
+<li>周期性的对 <code>Observable</code> 抽样：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/sample.html" target="_blank" rel="noopener">sample</a></li>
+<li>发出那些元素，这些元素产生后的特定的时间内，没有新的元素产生：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/debounce.html" target="_blank" rel="noopener">debounce</a></li>
+<li>直到元素的值发生变化，才发出新的元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/distinctUntilChanged.html" target="_blank" rel="noopener">distinctUntilChanged</a></li>
+<li>并提供元素是否相等的判定函数：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/distinctUntilChanged.html" target="_blank" rel="noopener">distinctUntilChanged</a></li>
+<li>在开始发出元素时，延时后进行订阅：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/delaySubscription.html" target="_blank" rel="noopener">delaySubscription</a></li>
+</ul>
+<p><strong>我想要从一些 <code>Observables</code> 中，只取第一个产生元素的 <code>Observable</code>：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/amb.html" target="_blank" rel="noopener">amb</a></strong></p>
+<p><strong>我想评估 <code>Observable</code> 的全部元素</strong></p>
+<ul>
+<li>并且对每个元素应用聚合方法，待所有元素都应用聚合方法后，发出结果：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/reduce.html" target="_blank" rel="noopener">reduce</a></li>
+<li>并且对每个元素应用聚合方法，每次应用聚合方法后，发出结果：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/scan.html" target="_blank" rel="noopener">scan</a></li>
+</ul>
+<p><strong>我想把 <code>Observable</code> 转换为其他的数据结构：as…</strong></p>
+<p><strong>我想在某个 <a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/rxswift_core/schedulers.html" target="_blank" rel="noopener">Scheduler</a> 应用操作符：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/subscribeOn.html" target="_blank" rel="noopener">subscribeOn</a></strong></p>
+<ul>
+<li>在某个 <a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/rxswift_core/schedulers.html" target="_blank" rel="noopener">Scheduler</a> 监听：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/observeOn.html" target="_blank" rel="noopener">observeOn</a></li>
+</ul>
+<p><strong>我想要 <code>Observable</code> 发生某个事件时, 采取某个行动：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/do.html" target="_blank" rel="noopener">do</a></strong></p>
+<p><strong>我想要 <code>Observable</code> 发出一个 <code>error</code> 事件：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/error.html" target="_blank" rel="noopener">error</a></strong></p>
+<ul>
+<li>如果规定时间内没有产生元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/timeout.html" target="_blank" rel="noopener">timeout</a></li>
+</ul>
+<p><strong>我想要 <code>Observable</code> 发生错误时，优雅的恢复</strong></p>
+<ul>
+<li>如果规定时间内没有产生元素，就切换到备选 <code>Observable</code> ：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/timeout.html" target="_blank" rel="noopener">timeout</a></li>
+<li>如果产生错误，将错误替换成某个元素 ：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/catchError.html" target="_blank" rel="noopener">catchErrorJustReturn</a></li>
+<li>如果产生错误，就切换到备选 <code>Observable</code> ：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/catchError.html" target="_blank" rel="noopener">catchError</a></li>
+<li>如果产生错误，就重试 ：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/retry.html" target="_blank" rel="noopener">retry</a></li>
+</ul>
+<p><strong>我创建一个 <code>Disposable</code> 资源，使它与 <code>Observable</code> 具有相同的寿命：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/using.html" target="_blank" rel="noopener">using</a></strong></p>
+<p><strong>我创建一个 <code>Observable</code>，直到我通知它可以产生元素后，才能产生元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/publish.html" target="_blank" rel="noopener">publish</a></strong></p>
+<ul>
+<li>并且，就算是在产生元素后订阅，也要发出全部元素：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/replay.html" target="_blank" rel="noopener">replay</a></li>
+<li>并且，一旦所有观察者取消观察，他就被释放掉：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/refCount.html" target="_blank" rel="noopener">refCount</a></li>
+<li>通知它可以产生元素了：<a href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/decision_tree/connect.html" target="_blank" rel="noopener">connect</a></li>
+</ul>
+<p>笨鸟先飞，执行合一。基本了解<code>RxSwift</code>后，就应该动手写一些BUG了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxSwift/" rel="tag"># RxSwift</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/28/RxSwift-结合操作符/" rel="next" title="RxSwift 结合操作符">
+                <i class="fa fa-chevron-left"></i> RxSwift 结合操作符
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/09/源码阅读-Kingfisher/" rel="prev" title="源码阅读 Kingfisher">
+                源码阅读 Kingfisher <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">DarrenW</p>
+              <p class="site-description motion-element" itemprop="description">笨鸟先飞，知行合一。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/darren1192" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#决策树"><span class="nav-number">1.</span> <span class="nav-text">决策树</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DarrenW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

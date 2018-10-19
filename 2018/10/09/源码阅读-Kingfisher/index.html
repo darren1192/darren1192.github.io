@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="源码阅读," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Kingfisher是一个用于图片下载和缓存的轻量级、纯swift库。通过喵神的介绍，可以得知Kingfisher有以下特点：  实现了图片的异步下载和缓存 基于URLSession的网络，提供基本图像处理器和过滤器。 内存和磁盘的多层缓存。 可取消下载和处理任务以提高性能。 独立的组件，根据需要单独使用下载器或缓存系统。 预览图像并在以后需要时从缓存中显示它们。 对UIImageView,NSI">
+<meta name="keywords" content="源码阅读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="源码阅读 Kingfisher">
+<meta property="og:url" content="http://yoursite.com/2018/10/09/源码阅读-Kingfisher/index.html">
+<meta property="og:site_name" content="DarrenW">
+<meta property="og:description" content="Kingfisher是一个用于图片下载和缓存的轻量级、纯swift库。通过喵神的介绍，可以得知Kingfisher有以下特点：  实现了图片的异步下载和缓存 基于URLSession的网络，提供基本图像处理器和过滤器。 内存和磁盘的多层缓存。 可取消下载和处理任务以提高性能。 独立的组件，根据需要单独使用下载器或缓存系统。 预览图像并在以后需要时从缓存中显示它们。 对UIImageView,NSI">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-10-19T07:01:23.600Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="源码阅读 Kingfisher">
+<meta name="twitter:description" content="Kingfisher是一个用于图片下载和缓存的轻量级、纯swift库。通过喵神的介绍，可以得知Kingfisher有以下特点：  实现了图片的异步下载和缓存 基于URLSession的网络，提供基本图像处理器和过滤器。 内存和磁盘的多层缓存。 可取消下载和处理任务以提高性能。 独立的组件，根据需要单独使用下载器或缓存系统。 预览图像并在以后需要时从缓存中显示它们。 对UIImageView,NSI">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/09/源码阅读-Kingfisher/"/>
+
+
+
+
+
+  <title>源码阅读 Kingfisher | DarrenW</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DarrenW</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/源码阅读-Kingfisher/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DarrenW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DarrenW">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">源码阅读 Kingfisher</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T20:33:02+08:00">
+                2018-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://github.com/onevcat/Kingfisher" target="_blank" rel="noopener">Kingfisher</a>是一个用于图片下载和缓存的轻量级、纯swift库。通过<a href="https://weibo.com/onevcat?profile_ftype=1&amp;is_all=1#_rnd1539003449528" target="_blank" rel="noopener">喵神</a>的介绍，可以得知<code>Kingfisher</code>有以下特点：</p>
+<ul>
+<li>实现了图片的异步下载和缓存</li>
+<li>基于<code>URLSession</code>的网络，提供基本图像处理器和过滤器。</li>
+<li>内存和磁盘的多层缓存。</li>
+<li>可取消下载和处理任务以提高性能。</li>
+<li>独立的组件，根据需要单独使用下载器或缓存系统。</li>
+<li>预览图像并在以后需要时从缓存中显示它们。</li>
+<li>对<code>UIImageView</code>,<code>NSImage</code>和<code>UIButton</code>的扩展，可以直接从<code>URL</code>设置图像。</li>
+<li>设置图像时内置过渡动画。</li>
+<li>加载图像时可自定义占位符。</li>
+<li>可扩展的图像处理和图像格式支持。</li>
+</ul>
+<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p>在项目中，我们使用<code>CocoaPods</code>下载安装<code>Kingfisher</code>。<br>我们查看<code>Kingfisher</code>的目录结构，如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Kingfisher</span><br><span class="line">    AnimatedImageView.swift    //动画控件   </span><br><span class="line">    Box.swift    //工具类</span><br><span class="line">    CacheSerializer.swift    //序列化类，读写文件时Data和Image互转</span><br><span class="line">    Filter.swift    //仅对CIImage有效</span><br><span class="line">    FormatIndicatedCacheSerializer.swift    //PNG/JPEG/GIF和Data互转</span><br><span class="line">    Image.swift    //图片格式转换</span><br><span class="line">    ImageCache.swift    //图片缓存</span><br><span class="line">    ImageDownloader.swift    //图片下载</span><br><span class="line">    ImageModifier.swift    //图片修改</span><br><span class="line">    ImagePrefetcher.swift    //图片下载管理类，对并发多个下载任务的处理</span><br><span class="line">    ImageProcessor.swift    //数据处理类，将Data转为Image</span><br><span class="line">    ImageTransition.swift    //动画效果</span><br><span class="line">    ImageView+Kingfisher.swift    //扩展ImageView添加下载图片的方法</span><br><span class="line">    Indicator.swift    //动画相关</span><br><span class="line">    Kingfisher.h    //版本号</span><br><span class="line">    Kingfisher.swift    //类，扩展ImageView添加属性kf</span><br><span class="line">    KingfisherManager.swift    //管理类，封装图片下载和缓存的逻辑</span><br><span class="line">    KingfisherOptionsInfo.swift    //枚举类</span><br><span class="line">    Placeholder.swift    //默认图片管理类</span><br><span class="line">    RequestModifier.swift    //协议，修改原始URLRequest参数</span><br><span class="line">    Resource.swift    //协议，声明下载链接和缓存key</span><br><span class="line">    String+MD5.swift    //MD5加密</span><br><span class="line">    ThreadHelper.swift    //工具类</span><br><span class="line">    UIButton+Kingfisher.swift    //扩展UIButton添加下载图片的方法</span><br></pre></td></tr></table></figure></p>
+<h2 id="调用方法"><a href="#调用方法" class="headerlink" title="调用方法"></a>调用方法</h2><p>很简单的一句话：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.imageV.kf.setImage(with: imgUrl)</span><br></pre></td></tr></table></figure></p>
+<p>如果想在图片加载的过程中添加默认图片，可以添加<code>placeholder</code>方法，监听加载的过程<code>progressBlock</code>，图片加载完成后的回调<code>completionHandler</code>。</p>
+<h2 id="查看方法"><a href="#查看方法" class="headerlink" title="查看方法"></a>查看方法</h2><p>查看<code>kf.setImage</code>方法，我们会跳到<em>ImageView+Kingfisher.swift</em>文件里。这里我们对方法做一个简单的介绍<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@discardableResult</span><br><span class="line">public func setImage(with resource: Resource?,</span><br><span class="line">                     placeholder: Placeholder? = nil,</span><br><span class="line">                     options: KingfisherOptionsInfo? = nil,</span><br><span class="line">                     progressBlock: DownloadProgressBlock? = nil,</span><br><span class="line">                     completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask&#123;...&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以看到，在这个方法里面，包括了ImageView的资源、默认图片、作者封装的枚举类、加载进度的回调以及完成结果。<br><code>@discardableResult</code>方法是为了取消不使用返回值的警告。<br>在这个方法里面(方法太长就不列举出来，捡主要的说)，</p>
+<ul>
+<li>首先判断参数合法性，当<code>resource</code>为<code>nil</code>时，展示默认图片。</li>
+<li>设置读取策略和启动动画。比如常见的一个问题：当用户头像改变但图片<code>URL</code>没有改变时，怎么去处理用户头像。一般有两种方法，一种是在缓存用户头像时保存当前时间。另一种就是设置读取策略，<code>KingfisherOptionsInfo</code>是一个枚举，设置它为<code>forceRefresh</code>时，可以强制刷新。</li>
+<li>从内存、文件或网络<code>URL</code>获取对应图片数据。</li>
+<li>获取图片完成后，在主线程刷新界面。</li>
+</ul>
+<p>我们查看一下这里面的参数：</p>
+<h3 id="Resource"><a href="#Resource" class="headerlink" title="Resource"></a>Resource</h3><p>Resource是一个协议，我们查看源码可以看到：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public protocol Resource &#123;</span><br><span class="line">    var cacheKey: String &#123; get &#125;</span><br><span class="line">    var downloadURL: URL &#123; get &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>cacheKey</code>是图片保存的key值，当<code>cacheKey</code>为<code>nil</code>时，取<code>downloadURL.absoluteString</code>(有兴趣的可以去了解一下<code>absoluteString</code>和<code>path</code>的区别)。<code>downloadURL</code>不言而喻，就是图片的<code>URL</code>。</p>
+<h3 id="Placeholder"><a href="#Placeholder" class="headerlink" title="Placeholder"></a>Placeholder</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public protocol Placeholder &#123;</span><br><span class="line">    func add(to imageView: ImageView)</span><br><span class="line">    func remove(from imageView: ImageView)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Placeholder</code>是一个协议，作者为它定义了<code>add</code>和<code>remove</code>方法，任何。默认实现了<code>Image</code>，如果想用<code>View</code>充当<code>Placeholder</code>，只要让<code>view</code>遵守协议即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extension Placeholder where Self: View&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="KingfisherOptionsInfo"><a href="#KingfisherOptionsInfo" class="headerlink" title="KingfisherOptionsInfo"></a>KingfisherOptionsInfo</h3><p><code>KingfisherOptionsInfo</code>是一个类型别名，点击查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public typealias KingfisherOptionsInfo = [KingfisherOptionsInfoItem]</span><br></pre></td></tr></table></figure></p>
+<p>所以我们关注的应该是<code>KingfisherOptionsInfoItem</code>是什么东西？那么它是什么呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public enum KingfisherOptionsInfoItem &#123;</span><br><span class="line">    case targetCache(ImageCache)    //系统缓存位置。可以设置的属性</span><br><span class="line">    case originalCache(ImageCache)    //系统缓存原始图像位置（只用于自己设置placeholder） </span><br><span class="line">    case downloader(ImageDownloader)    //获取更改session属性，设置请求</span><br><span class="line">    case transition(ImageTransition)    //自定义动画</span><br><span class="line">    case downloadPriority(Float)    //下载优先级（0-1）</span><br><span class="line">    case forceRefresh    //每次请求忽略缓存，直接下载</span><br><span class="line">    case fromMemoryCacheOrRefresh    //先取缓存再去文件，再去下载</span><br><span class="line">    case forceTransition    //强制移动</span><br><span class="line">    case cacheMemoryOnly     //只从缓存读取，不读取本机沙盒图片</span><br><span class="line">    case onlyFromCache    //从缓存、沙盒读取，没有也不下载网络，显示placeholder</span><br><span class="line">    case backgroundDecode    //设置后，显示前在后台线程解码</span><br><span class="line">    case callbackDispatchQueue(DispatchQueue?)    //自定义回调队列，默认主线程</span><br><span class="line">    case scaleFactor(CGFloat)    //自定义图片data -&gt; Image缩放比例，不指定按屏幕2x\3x缩放</span><br><span class="line">    case preloadAllAnimationData    //预先加载data成图片缓存</span><br><span class="line">    case requestModifier(ImageDownloadRequestModifier)    //改变请求</span><br><span class="line">    case processor(ImageProcessor)    //自定义Data转图片样式</span><br><span class="line">    case cacheSerializer(CacheSerializer)    //自定义缓存Data 转图像样式</span><br><span class="line">    case imageModifier(ImageModifier)    //修改图像</span><br><span class="line">    case keepCurrentImageWhileLoading     //包含这个意味着placeHolder设置无效，没有直接用默认</span><br><span class="line">    case onlyLoadFirstFrame    //如果返回结果是.gif图，只取第一帧显示</span><br><span class="line">    case cacheOriginalImage    //同时缓存原始图片和下载后的图片</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="DownloadProgressBlock"><a href="#DownloadProgressBlock" class="headerlink" title="DownloadProgressBlock"></a>DownloadProgressBlock</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public typealias DownloadProgressBlock = ((_ receivedSize: Int64, _ totalSize: Int64) -&gt; ())</span><br></pre></td></tr></table></figure>
+<p><code>DownloadProgressBlock</code>里面有<code>receivedSize</code>和<code>totalSize</code>，可以根据这两个参数得知图片下载了多少和图片多大，也可以计算图片的下载进度。</p>
+<h3 id="CompletionHandler"><a href="#CompletionHandler" class="headerlink" title="CompletionHandler"></a>CompletionHandler</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public typealias CompletionHandler = ((_ image: Image?, _ error: NSError?, _ cacheType: CacheType, _ imageURL: URL?) -&gt; ())</span><br></pre></td></tr></table></figure>
+<p><code>CompletionHandler</code>的回调里会有<code>image</code>、<code>error</code>、<code>cacheType</code>、<code>imageURL</code>四个参数。<code>image</code>、<code>error</code>、<code>imageURL</code>不做介绍，直接就能看出什么内容。<br>主要看一下<code>cacheType</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public enum CacheType &#123;</span><br><span class="line">    case none, memory, disk</span><br><span class="line">    public var cached: Bool &#123;</span><br><span class="line">        switch self &#123;</span><br><span class="line">        case .memory, .disk: return true</span><br><span class="line">        case .none: return false</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><code>none</code>检索图片时，图片尚未缓存</li>
+<li><code>memory</code>图片缓存在内存中</li>
+<li><code>disk</code>图片缓存在磁盘中</li>
+</ul>
+<h2 id="检索图片"><a href="#检索图片" class="headerlink" title="检索图片"></a>检索图片</h2><p>OK，让我们继续看这些代码。在<code>setImage</code>方法中，从内存、文件或网络<code>URL</code>获取对应图片数据是怎么实现的呢？这里，我们可以查看<code>KingfisherManager.shared.retrieveImage</code>方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">@discardableResult</span><br><span class="line">public func retrieveImage(with resource: Resource,</span><br><span class="line">    options: KingfisherOptionsInfo?,</span><br><span class="line">    progressBlock: DownloadProgressBlock?,</span><br><span class="line">    completionHandler: CompletionHandler?) -&gt; RetrieveImageTask</span><br><span class="line">&#123;</span><br><span class="line">    let task = RetrieveImageTask()</span><br><span class="line">    let options = currentDefaultOptions + (options ?? KingfisherEmptyOptionsInfo)</span><br><span class="line">    if options.forceRefresh &#123;</span><br><span class="line">        _ = downloadAndCacheImage(</span><br><span class="line">            with: resource.downloadURL,</span><br><span class="line">            forKey: resource.cacheKey,</span><br><span class="line">            retrieveImageTask: task,</span><br><span class="line">            progressBlock: progressBlock,</span><br><span class="line">            completionHandler: completionHandler,</span><br><span class="line">            options: options)</span><br><span class="line">    &#125; else &#123;    </span><br><span class="line">        tryToRetrieveImageFromCache(</span><br><span class="line">            forKey: resource.cacheKey,</span><br><span class="line">            with: resource.downloadURL, </span><br><span class="line">            retrieveImageTask: task,</span><br><span class="line">            progressBlock: progressBlock,</span><br><span class="line">            completionHandler: completionHandler,</span><br><span class="line">            options: options)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return task</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，代码会通过<code>KingfisherOptionsInfo</code>进行判断是强制刷新，网络下载并执行缓存策略还是从内存或文件中获取对应的Image。</p>
+<h3 id="图片下载"><a href="#图片下载" class="headerlink" title="图片下载"></a>图片下载</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@discardableResult</span><br><span class="line">func downloadAndCacheImage(with url: URL,</span><br><span class="line">                         forKey key: String,</span><br><span class="line">                  retrieveImageTask: RetrieveImageTask,</span><br><span class="line">                      progressBlock: DownloadProgressBlock?,</span><br><span class="line">                  completionHandler: CompletionHandler?,</span><br><span class="line">                            options: KingfisherOptionsInfo) -&gt; RetrieveImageDownloadTask?&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>downloadAndCacheImage</code>方法中，会<code>return  downloader.downloadImage</code>方法，下载的主要逻辑在这里实现，对应的文件是<em>ImageDownloader.swift</em>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@discardableResult</span><br><span class="line">open func downloadImage(with url: URL,</span><br><span class="line">               retrieveImageTask: RetrieveImageTask? = nil,</span><br><span class="line">                         options: KingfisherOptionsInfo? = nil,</span><br><span class="line">                   progressBlock: ImageDownloaderProgressBlock? = nil,</span><br><span class="line">               completionHandler: ImageDownloaderCompletionHandler? = nil) -&gt; RetrieveImageDownloadTask?&#123;...&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>ImageDownloader.swift</code>文件中，主要参数：</p>
+<ul>
+<li><code>downloadTimeout</code> 超时时间，默认15秒</li>
+<li><code>trustedHosts</code> 信任的请求地址，和自己实现请求代理设置冲突，二选一</li>
+<li><code>sessionConfiguration</code> session配置设置</li>
+<li><code>requestsUsePipelining</code> 请求是否管道类型，是否按顺序下载，默认<code>false</code></li>
+<li><code>sessionHandler</code>单独设计出的一个<code>ImageDownloaderSessionHandler</code>，是为了解决之前出现的<a href="https://github.com/onevcat/Kingfisher/issues/235" target="_blank" rel="noopener">内存泄漏</a></li>
+<li><code>delegate</code> 下载代理</li>
+<li><code>authenticationChallengeResponder</code> 信任请求代理，和trustedHosts冲突二选一</li>
+<li><code>fetchLoads</code> 下载完成每个URL可能有多个处理方式，优先取这里的</li>
+<li>此外还有三个<code>DispatchQueue</code>：<code>barrierQueue</code>、<code>processQueue</code>、<code>cancelQueue</code></li>
+</ul>
+<p>下载完成后，在<code>completionHandler</code>回调中处理图片，如果下载失败：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if let error = error, error.code == KingfisherError.notModified.rawValue &#123;</span><br><span class="line">    //从缓存中读取，不需保存，直接返回</span><br><span class="line">    targetCache.retrieveImage(forKey: key, options: options, completionHandler: &#123; (cacheImage, cacheType) -&gt; () in</span><br><span class="line">        completionHandler?(cacheImage, nil, cacheType, url)</span><br><span class="line">    &#125;)</span><br><span class="line">    return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>下载成功：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">if let image = image, let originalData = originalData &#123;</span><br><span class="line">    //存储图片</span><br><span class="line">    targetCache.store(image,</span><br><span class="line">                      original: originalData,</span><br><span class="line">                      forKey: key,</span><br><span class="line">                      processorIdentifier:options.processor.identifier,</span><br><span class="line">                      cacheSerializer: options.cacheSerializer,</span><br><span class="line">                      toDisk: !options.cacheMemoryOnly,</span><br><span class="line">                      completionHandler: nil)</span><br><span class="line">        if options.cacheOriginalImage &amp;&amp; options.processor != DefaultImageProcessor.default &#123;</span><br><span class="line">            let originalCache = options.originalCache</span><br><span class="line">            let defaultProcessor = DefaultImageProcessor.default</span><br><span class="line">            if let originalImage = defaultProcessor.process(item: .data(originalData), options: options) &#123;</span><br><span class="line">                originalCache.store(originalImage,</span><br><span class="line">                        original: originalData,</span><br><span class="line">                        forKey: key,</span><br><span class="line">                        processorIdentifier: defaultProcessor.identifier,</span><br><span class="line">                        cacheSerializer: options.cacheSerializer,</span><br><span class="line">                        toDisk: !options.cacheMemoryOnly,</span><br><span class="line">                        completionHandler: nil)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="存储图片"><a href="#存储图片" class="headerlink" title="存储图片"></a>存储图片</h4><p>我们先来看一下实现的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">open func store(_ image: Image,</span><br><span class="line">                  original: Data? = nil,</span><br><span class="line">                  forKey key: String,</span><br><span class="line">                  processorIdentifier identifier: String = &quot;&quot;,</span><br><span class="line">                  cacheSerializer serializer: CacheSerializer = DefaultCacheSerializer.default,</span><br><span class="line">                  toDisk: Bool = true,</span><br><span class="line">                  completionHandler: (() -&gt; Void)? = nil)&#123;...&#125;</span><br></pre></td></tr></table></figure></p>
+<p>代码中<code>memoryCache</code>是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fileprivate let memoryCache = NSCache&lt;NSString, AnyObject&gt;()</span><br></pre></td></tr></table></figure></p>
+<p>可见图片存储首先是缓存在<code>NSCache</code>中，如果想存储在磁盘中(<code>if toDisk</code>)，利用串行队列异步的进行存储原图。</p>
+<h4 id="获取图片"><a href="#获取图片" class="headerlink" title="获取图片"></a>获取图片</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@discardableResult</span><br><span class="line">open func retrieveImage(forKey key: String,</span><br><span class="line">                           options: KingfisherOptionsInfo?,</span><br><span class="line">                 completionHandler: ((Image?, CacheType) -&gt; ())?) -&gt; RetrieveImageDiskTask?&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>首先从内存中获取图片<code>if let image = self.retrieveImageInMemoryCache(forKey: key, options: options)</code></li>
+<li>如果没有，在根据条件判断是否从磁盘上获取<code>if let image = sSelf.retrieveImageInDiskCache(forKey: key, options: options)</code></li>
+</ul>
+<h4 id="删除图片"><a href="#删除图片" class="headerlink" title="删除图片"></a>删除图片</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">open func removeImage(forKey key: String,</span><br><span class="line">                      processorIdentifier identifier: String = &quot;&quot;,</span><br><span class="line">                      fromDisk: Bool = true,</span><br><span class="line">                      completionHandler: (() -&gt; Void)? = nil)&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@objc public func clearMemoryCache() &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open func clearDiskCache(completion handler: (()-&gt;())? = nil) &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open func cleanExpiredDiskCache(completion handler: (()-&gt;())? = nil) &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@objc public func backgroundCleanExpiredDiskCache() &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>其中，一些方法是通过通知的方法来实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 系统内存警告</span><br><span class="line">NotificationCenter.default.addObserver(self, selector: #selector(clearMemoryCache), name: .UIApplicationDidReceiveMemoryWarning, object: nil)    </span><br><span class="line">// 程序终止</span><br><span class="line">NotificationCenter.default.addObserver(self, selector: #selector(cleanExpiredDiskCache), name: .UIApplicationWillTerminate, object: nil)</span><br><span class="line">// 程序进入后台</span><br><span class="line">NotificationCenter.default.addObserver(self, selector: #selector(backgroundCleanExpiredDiskCache), name: .UIApplicationDidEnterBackground, object: nil)</span><br></pre></td></tr></table></figure></p>
+<p>此外，还有一些属性要注意:</p>
+<ul>
+<li><code>maxMemoryCost</code>最大缓存量，在收到内存警告时会被清空。</li>
+<li><code>pathExtension</code>沙盒后续拼接文件夹名称</li>
+<li><code>maxCachePeriodInSecond</code>默认清除一周前的图片</li>
+<li><code>maxDiskCacheSize</code>沙盒最大存储量，为0，默认无限制</li>
+</ul>
+<p>以上就是对Kingfisher的简单描述，它有很多方法值得我们去借鉴，比如<code>@discardableResult</code>、<code>where</code>、<code>typealias</code>、<code>if case let</code>、善于利用<code>guard</code>、扩展协议等等。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码阅读/" rel="tag"># 源码阅读</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/30/RxSwift-操作符决策树/" rel="next" title="RxSwift 操作符决策树">
+                <i class="fa fa-chevron-left"></i> RxSwift 操作符决策树
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/18/一张图片引发的思考/" rel="prev" title="一张图片引发的思考">
+                一张图片引发的思考 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">DarrenW</p>
+              <p class="site-description motion-element" itemprop="description">笨鸟先飞，知行合一。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/darren1192" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目录结构"><span class="nav-number">1.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用方法"><span class="nav-number">2.</span> <span class="nav-text">调用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看方法"><span class="nav-number">3.</span> <span class="nav-text">查看方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Resource"><span class="nav-number">3.1.</span> <span class="nav-text">Resource</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Placeholder"><span class="nav-number">3.2.</span> <span class="nav-text">Placeholder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KingfisherOptionsInfo"><span class="nav-number">3.3.</span> <span class="nav-text">KingfisherOptionsInfo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DownloadProgressBlock"><span class="nav-number">3.4.</span> <span class="nav-text">DownloadProgressBlock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CompletionHandler"><span class="nav-number">3.5.</span> <span class="nav-text">CompletionHandler</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检索图片"><span class="nav-number">4.</span> <span class="nav-text">检索图片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图片下载"><span class="nav-number">4.1.</span> <span class="nav-text">图片下载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#存储图片"><span class="nav-number">4.1.1.</span> <span class="nav-text">存储图片</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取图片"><span class="nav-number">4.1.2.</span> <span class="nav-text">获取图片</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除图片"><span class="nav-number">4.1.3.</span> <span class="nav-text">删除图片</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DarrenW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

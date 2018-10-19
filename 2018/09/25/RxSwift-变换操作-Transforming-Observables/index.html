@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxSwift," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="变换操作指的是对原始的Observable序列进行一些转换，类似于 Swift 中CollectionType的各种转换 1. bufferbuffer操作符将缓存Observable中发出的新元素，当元素达到某个数量，或者经过了特定的时间，它就会将这个元素集合发送出来。🌰：12345678910111213let disposeBag = DisposeBag()let subject = P">
+<meta name="keywords" content="RxSwift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxSwift 变换操作(Transforming Observables)">
+<meta property="og:url" content="http://yoursite.com/2018/09/25/RxSwift-变换操作-Transforming-Observables/index.html">
+<meta property="og:site_name" content="DarrenW">
+<meta property="og:description" content="变换操作指的是对原始的Observable序列进行一些转换，类似于 Swift 中CollectionType的各种转换 1. bufferbuffer操作符将缓存Observable中发出的新元素，当元素达到某个数量，或者经过了特定的时间，它就会将这个元素集合发送出来。🌰：12345678910111213let disposeBag = DisposeBag()let subject = P">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-76c121cb942f7c65.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-4658ffd7d827e9c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-def03bf478a9770d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-f40ff203991060c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-ac2d4f8e45ea1ebb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-5969d4c9a2013318.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-83cf372dd5b1cbe0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-4193d29d366c8e24.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-10-19T07:01:23.598Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxSwift 变换操作(Transforming Observables)">
+<meta name="twitter:description" content="变换操作指的是对原始的Observable序列进行一些转换，类似于 Swift 中CollectionType的各种转换 1. bufferbuffer操作符将缓存Observable中发出的新元素，当元素达到某个数量，或者经过了特定的时间，它就会将这个元素集合发送出来。🌰：12345678910111213let disposeBag = DisposeBag()let subject = P">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/2855070-76c121cb942f7c65.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/25/RxSwift-变换操作-Transforming-Observables/"/>
+
+
+
+
+
+  <title>RxSwift 变换操作(Transforming Observables) | DarrenW</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DarrenW</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/25/RxSwift-变换操作-Transforming-Observables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DarrenW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DarrenW">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxSwift 变换操作(Transforming Observables)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-25T21:52:23+08:00">
+                2018-09-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>变换操作指的是对原始的<code>Observable</code>序列进行一些转换，类似于 Swift 中<code>CollectionType</code>的各种转换</p>
+<h4 id="1-buffer"><a href="#1-buffer" class="headerlink" title="1. buffer"></a>1. buffer</h4><p><code>buffer</code>操作符将缓存<code>Observable</code>中发出的新元素，当元素达到某个数量，或者经过了特定的时间，它就会将这个元素集合发送出来。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-76c121cb942f7c65.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="buffer.png"><br>🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let subject = PublishSubject&lt;String&gt;()</span><br><span class="line"></span><br><span class="line">subject.buffer(timeSpan: 1, count: 3, scheduler: MainScheduler.instance)</span><br><span class="line">        .subscribe&#123; print($0) &#125;</span><br><span class="line">        .disposed(by: disposeBag)</span><br><span class="line">subject.onNext(&quot;A&quot;)</span><br><span class="line">subject.onNext(&quot;B&quot;)</span><br><span class="line">subject.onNext(&quot;C&quot;)</span><br><span class="line"></span><br><span class="line">subject.onNext(&quot;🐯&quot;)</span><br><span class="line">subject.onNext(&quot;🐭&quot;)</span><br><span class="line">subject.onNext(&quot;🐱&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">next([&quot;A&quot;, &quot;B&quot;, &quot;C&quot;])</span><br><span class="line">next([&quot;🐯&quot;, &quot;🐭&quot;, &quot;🐱&quot;])</span><br></pre></td></tr></table></figure></p>
+<p>有一点疑问，对于<code>buffer</code>在<code>RxSwift</code>的解释是</p>
+<blockquote>
+<p>Projects each element of an observable sequence into a buffer that’s sent out when either it’s full or a given amount of time has elapsed, using the specified scheduler to run timers</p>
+</blockquote>
+<p><code>RxSwift</code>中，它的意思是当缓冲区满了或超过了给定的时间时，就会发出缓冲区。可是如果我们把上述代码稍微改变一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let subject = PublishSubject&lt;String&gt;()</span><br><span class="line"></span><br><span class="line">subject.buffer(timeSpan: 1, count: 3, scheduler: MainScheduler.instance)</span><br><span class="line">        .subscribe&#123; print($0) &#125;</span><br><span class="line">        .disposed(by: disposeBag)</span><br><span class="line">subject.onNext(&quot;A&quot;)</span><br><span class="line">subject.onNext(&quot;B&quot;)</span><br><span class="line">subject.onNext(&quot;C&quot;)</span><br><span class="line"></span><br><span class="line">//  subject.onNext(&quot;🐯&quot;)</span><br><span class="line">subject.onNext(&quot;🐭&quot;)</span><br><span class="line">subject.onNext(&quot;🐱&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">next([&quot;A&quot;, &quot;B&quot;, &quot;C&quot;])</span><br></pre></td></tr></table></figure></p>
+<p>并没有后面的内容。因为我在很多文章里都看到说如果规定时间内不够要求的数量也会发出（有几个发几个，一个都没有发空数组 []）。所以，这点值得注意。</p>
+<h4 id="2-window"><a href="#2-window" class="headerlink" title="2. window"></a>2. window</h4><ul>
+<li><code>window</code>操作符和<code>buffer</code>十分相似。不过<code>buffer</code>是周期性的将缓存的元素集合发送出来，而<code>window</code>周期性的将元素集合以<code>Observable</code>的形态发送出来。<br>同时<code>buffer</code>要等到元素搜集完毕后，才会发出元素序列。而<code>window</code>可以实时发出元素序列。(这一点证明了<code>buffer</code>还是要元素搜集完毕后才会发出序列)<br><img src="https://upload-images.jianshu.io/upload_images/2855070-4658ffd7d827e9c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="window.png"><br>首先我们先这么写：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let subject = PublishSubject&lt;String&gt;()</span><br><span class="line"></span><br><span class="line">subject.window(timeSpan: 1, count: 3, scheduler: MainScheduler.instance)</span><br><span class="line">        .subscribe&#123; print($0) &#125;</span><br><span class="line">        .disposed(by: disposeBag)</span><br><span class="line"></span><br><span class="line">subject.onNext(&quot;A&quot;)</span><br><span class="line">subject.onNext(&quot;B&quot;)</span><br><span class="line">subject.onNext(&quot;C&quot;)</span><br><span class="line"></span><br><span class="line">subject.onNext(&quot;🐯&quot;)</span><br><span class="line">subject.onNext(&quot;🐭&quot;)</span><br><span class="line">subject.onNext(&quot;🐱&quot;)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">next(RxSwift.AddRef&lt;Swift.String&gt;)</span><br><span class="line">next(RxSwift.AddRef&lt;Swift.String&gt;)</span><br><span class="line">next(RxSwift.AddRef&lt;Swift.String&gt;)</span><br><span class="line">next(RxSwift.AddRef&lt;Swift.String&gt;)</span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
+<p>可见他在不断打印<code>next(RxSwift.AddRef&lt;Swift.String&gt;)</code><br>如果把代码改成这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let subject = PublishSubject&lt;String&gt;()</span><br><span class="line"></span><br><span class="line">subject.window(timeSpan: 1, count: 3, scheduler: MainScheduler.instance)</span><br><span class="line">    .subscribe(onNext: &#123;</span><br><span class="line">        print(&quot;subscribe:\($0)&quot;)</span><br><span class="line">        $0.asObservable()</span><br><span class="line">            .subscribe&#123; print($0) &#125;</span><br><span class="line">            .disposed(by: disposeBag)</span><br><span class="line">    &#125;)</span><br><span class="line">    .disposed(by: disposeBag)</span><br><span class="line"></span><br><span class="line">subject.onNext(&quot;A&quot;)</span><br><span class="line">subject.onNext(&quot;B&quot;)</span><br><span class="line">subject.onNext(&quot;C&quot;)</span><br><span class="line"></span><br><span class="line">subject.onNext(&quot;🐯&quot;)</span><br><span class="line">subject.onNext(&quot;🐭&quot;)</span><br><span class="line">subject.onNext(&quot;🐱&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">subscribe:RxSwift.AddRef&lt;Swift.String&gt;</span><br><span class="line">next(A)</span><br><span class="line">next(B)</span><br><span class="line">next(C)</span><br><span class="line">completed</span><br><span class="line">subscribe:RxSwift.AddRef&lt;Swift.String&gt;</span><br><span class="line">next(🐯)</span><br><span class="line">next(🐭)</span><br><span class="line">next(🐱)</span><br><span class="line">completed</span><br><span class="line">subscribe:RxSwift.AddRef&lt;Swift.String&gt;</span><br><span class="line">completed</span><br><span class="line">subscribe:RxSwift.AddRef&lt;Swift.String&gt;</span><br><span class="line">completed</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-map"><a href="#3-map" class="headerlink" title="3.map"></a>3.map</h4><p><code>map</code>操作符将<code>Observable</code>的每个元素应用你提供的转换方法，然后返回含有转换结果的<code>Observable</code>。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-def03bf478a9770d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="map.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(1,2,3)</span><br><span class="line">        .map&#123; $0 * 2 &#125;</span><br><span class="line">        .subscribe(onNext: &#123; print($0) &#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2</span><br><span class="line">4</span><br><span class="line">6</span><br></pre></td></tr></table></figure></p>
+<p>其实，swift中也有一个高级函数<code>map</code>，可以对数组中的每一个元素做一次处理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let array = [1, 2, 3]</span><br><span class="line">let nums = array.map &#123;</span><br><span class="line">    return $0 * 2</span><br><span class="line">&#125;</span><br><span class="line">print(nums)</span><br></pre></td></tr></table></figure></p>
+<p>结果得出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[2, 4, 6]</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-flatMap"><a href="#4-flatMap" class="headerlink" title="4. flatMap"></a>4. flatMap</h4><ul>
+<li><code>map</code>在做转换的时候容易出现“升维”的情况。即转变之后，从一个序列变成了一个序列的序列。</li>
+<li>而<code>flatMap</code>操作符会对源<code>Observable</code>的每一个元素应用一个转换方法，将他们转换成<code>Observables</code>。 然后将这些<code>Observables</code>的元素合并之后再发送出来。即又将其 “拍扁”（降维）成一个<code>Observable</code>序列。</li>
+<li>这个操作符是非常有用的。比如当<code>Observable</code>的元素本生拥有其他的<code>Observable</code>时，我们可以将所有子<code>Observables</code>的元素发送出来。</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/2855070-f40ff203991060c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="flatMap.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let first = BehaviorSubject.init(value: &quot;A&quot;)</span><br><span class="line">let second = BehaviorSubject.init(value: &quot;B&quot;)</span><br><span class="line">let variable = Variable.init(first)</span><br><span class="line"></span><br><span class="line">variable.asObservable()</span><br><span class="line">        .flatMap&#123; $0 &#125;</span><br><span class="line">        .subscribe(onNext: &#123; print($0) &#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br><span class="line">first.onNext(&quot;1&quot;)</span><br><span class="line">variable.value = second</span><br><span class="line">second.onNext(&quot;2&quot;)</span><br><span class="line">first.onNext(&quot;3&quot;)</span><br></pre></td></tr></table></figure>
+<p>打印结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">1</span><br><span class="line">B</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td></tr></table></figure></p>
+<p>我们依然可以在<code>Swift</code>中找到高级函数<code>flatMap</code>，它相比<code>map</code>有两点不同</p>
+<ul>
+<li><code>flatMap</code>返回后的数组中不存在<code>nil</code>，同时它会把<code>Optional</code>解包</li>
+<li><code>flatMap</code>还能把数组中存有数组的数组（二维数组、N维数组）一同打开变成一个新的数组</li>
+<li>也能把两个不同的数组合并成一个数组，这个合并的数组元素个数是前面两个数组元素个数的乘积</li>
+</ul>
+<p>只举一个🌰：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let array = [[1, 2, 3], [4, 5, 6]]</span><br><span class="line">let nums = array.flatMap&#123; $0 &#125;</span><br><span class="line">print(nums)</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1, 2, 3, 4, 5, 6]</span><br></pre></td></tr></table></figure></p>
+<h4 id="5-flatMapLatest"><a href="#5-flatMapLatest" class="headerlink" title="5. flatMapLatest"></a>5. flatMapLatest</h4><p><code>flatMapLatest</code>与<code>flatMap</code>的唯一区别是：<code>flatMapLatest</code>只会接收最新的<code>value</code>事件<br><img src="https://upload-images.jianshu.io/upload_images/2855070-ac2d4f8e45ea1ebb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="flatMapLatest.png"><br>将上述代码中<code>flatMap</code>改为<code>flatMapLatest</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let first = BehaviorSubject.init(value: &quot;A&quot;)</span><br><span class="line">let second = BehaviorSubject.init(value: &quot;B&quot;)</span><br><span class="line">let variable = Variable.init(first)</span><br><span class="line"></span><br><span class="line">variable.asObservable()</span><br><span class="line">        .flatMapLatest&#123; $0 &#125;</span><br><span class="line">        .subscribe(onNext: &#123; print($0) &#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br><span class="line">first.onNext(&quot;1&quot;)</span><br><span class="line">variable.value = second</span><br><span class="line">second.onNext(&quot;2&quot;)</span><br><span class="line">first.onNext(&quot;3&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">1</span><br><span class="line">B</span><br><span class="line">2</span><br></pre></td></tr></table></figure></p>
+<h4 id="6-concatMap"><a href="#6-concatMap" class="headerlink" title="6. concatMap"></a>6. concatMap</h4><p><code>concatMap</code>操作符将源<code>Observable</code>的每一个元素应用一个转换方法，将他们转换成<code>Observables</code>。然后让这些<code>Observables</code> 按顺序的发出元素，当前一个<code>Observable</code>元素发送完毕后，后一个<code>Observable</code>才可以开始发出元素。等待前一个<code>Observable</code>产生完成事件后，才对后一个<code>Observable</code>进行订阅<br><img src="https://upload-images.jianshu.io/upload_images/2855070-5969d4c9a2013318.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="concatMap.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">let first = BehaviorSubject.init(value: &quot;A&quot;)</span><br><span class="line">let second = BehaviorSubject.init(value: &quot;B&quot;)</span><br><span class="line">let variable = Variable.init(first)</span><br><span class="line"></span><br><span class="line">variable.asObservable()</span><br><span class="line">        .concatMap&#123; $0 &#125;</span><br><span class="line">        .subscribe(onNext: &#123; print($0) &#125;)   </span><br><span class="line">        .disposed(by: disposeBag)</span><br><span class="line">first.onNext(&quot;1&quot;)</span><br><span class="line">first.onNext(&quot;2&quot;)</span><br><span class="line"></span><br><span class="line">variable.value = second</span><br><span class="line">second.onNext(&quot;3&quot;)</span><br><span class="line">second.onNext(&quot;4&quot;)</span><br><span class="line"></span><br><span class="line">first.onCompleted()</span><br><span class="line">second.onNext(&quot;5&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td></tr></table></figure></p>
+<h4 id="7-scan"><a href="#7-scan" class="headerlink" title="7. scan"></a>7. scan</h4><p><code>scan</code>操作符将对第一个元素应用一个函数，将结果作为第一个元素发出。然后，将结果作为参数填入到第二个元素的应用函数中，创建第二个元素。以此类推，直到遍历完全部的元素。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-83cf372dd5b1cbe0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="scan.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable.of(1, 2, 3, 4, 5)</span><br><span class="line">        .scan(0) &#123; acum, elem  in</span><br><span class="line">            acum + elem</span><br><span class="line">        &#125;</span><br><span class="line">        .subscribe(onNext: &#123; print($0) &#125;)</span><br><span class="line">        .disposed(by: disposeBag)</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">3</span><br><span class="line">6</span><br><span class="line">10</span><br><span class="line">15</span><br></pre></td></tr></table></figure></p>
+<h4 id="8-groupBy"><a href="#8-groupBy" class="headerlink" title="8. groupBy"></a>8. groupBy</h4><ul>
+<li><code>groupBy</code>操作符将源<code>Observable</code>分解为多个子<code>Observable</code>，然后将这些子<code>Observable</code>发送出来。</li>
+<li>也就是说该操作符会将元素通过某个键进行分组，然后将分组后的元素序列以<code>Observable</code>的形态发送出来。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-4193d29d366c8e24.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="groupBy.png"><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">let disposeBag = DisposeBag()</span><br><span class="line">Observable&lt;Int&gt;.of(0, 1, 2, 3, 4, 5)</span><br><span class="line">        .groupBy &#123; (element) -&gt; String in</span><br><span class="line">            return element % 2 == 0 ? &quot;偶数&quot; : &quot;奇数&quot;</span><br><span class="line">        &#125;</span><br><span class="line">        .subscribe &#123; (event) in</span><br><span class="line">            switch event &#123;</span><br><span class="line">            case .next(let group):</span><br><span class="line">                group.asObservable().subscribe(&#123; (event) in</span><br><span class="line">                    print(&quot;key:\(group.key)  event:\(event)&quot;)</span><br><span class="line">                &#125;)</span><br><span class="line">                .disposed(by: disposeBag)</span><br><span class="line">            default:</span><br><span class="line">                print(&quot;&quot;)</span><br><span class="line">            &#125;</span><br><span class="line">&#125;.disposed(by: disposeBag)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">key:偶数  event:next(0)</span><br><span class="line">key:奇数  event:next(1)</span><br><span class="line">key:偶数  event:next(2)</span><br><span class="line">key:奇数  event:next(3)</span><br><span class="line">key:偶数  event:next(4)</span><br><span class="line">key:奇数  event:next(5)</span><br><span class="line">key:奇数  event:completed</span><br><span class="line">key:偶数  event:completed</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxSwift/" rel="tag"># RxSwift</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/22/RxSwift-Observable-Observer和辅助类型/" rel="next" title="RxSwift Observable&Observer和辅助类型">
+                <i class="fa fa-chevron-left"></i> RxSwift Observable&Observer和辅助类型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/26/RxSwift-过滤操作符-Filtering-Observables/" rel="prev" title="RxSwift 过滤操作符(Filtering Observables)">
+                RxSwift 过滤操作符(Filtering Observables) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">DarrenW</p>
+              <p class="site-description motion-element" itemprop="description">笨鸟先飞，知行合一。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/darren1192" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-buffer"><span class="nav-number">1.</span> <span class="nav-text">1. buffer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-window"><span class="nav-number">2.</span> <span class="nav-text">2. window</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-map"><span class="nav-number">3.</span> <span class="nav-text">3.map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-flatMap"><span class="nav-number">4.</span> <span class="nav-text">4. flatMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-flatMapLatest"><span class="nav-number">5.</span> <span class="nav-text">5. flatMapLatest</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-concatMap"><span class="nav-number">6.</span> <span class="nav-text">6. concatMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-scan"><span class="nav-number">7.</span> <span class="nav-text">7. scan</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-groupBy"><span class="nav-number">8.</span> <span class="nav-text">8. groupBy</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DarrenW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
