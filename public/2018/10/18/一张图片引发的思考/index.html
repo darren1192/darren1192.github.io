@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="其它," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="背景：前段时间做微信小程序分享，用了某家的SDK，然鹅……他们家SDK只能上传png、jpeg格式的图片，微信不是可以上传Data吗？？？？我吭哧吭哧半天用UIImageJPEGRepresentation压缩图片，然后在生成图片，也没把图片传上去。我当时想肯定是图片大小有问题，因为微信限制128KB以内。我查看保存在沙盒里的图片才32KB啊？？怎么会上传不上去呢？再查看Image的Data大小，">
+<meta name="keywords" content="其它">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一张图片引发的思考">
+<meta property="og:url" content="http://yoursite.com/2018/10/18/一张图片引发的思考/index.html">
+<meta property="og:site_name" content="DarrenW">
+<meta property="og:description" content="背景：前段时间做微信小程序分享，用了某家的SDK，然鹅……他们家SDK只能上传png、jpeg格式的图片，微信不是可以上传Data吗？？？？我吭哧吭哧半天用UIImageJPEGRepresentation压缩图片，然后在生成图片，也没把图片传上去。我当时想肯定是图片大小有问题，因为微信限制128KB以内。我查看保存在沙盒里的图片才32KB啊？？怎么会上传不上去呢？再查看Image的Data大小，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-1e640864e3ce90f4.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-2e399ff3e5457a17.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-10-19T07:01:23.600Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一张图片引发的思考">
+<meta name="twitter:description" content="背景：前段时间做微信小程序分享，用了某家的SDK，然鹅……他们家SDK只能上传png、jpeg格式的图片，微信不是可以上传Data吗？？？？我吭哧吭哧半天用UIImageJPEGRepresentation压缩图片，然后在生成图片，也没把图片传上去。我当时想肯定是图片大小有问题，因为微信限制128KB以内。我查看保存在沙盒里的图片才32KB啊？？怎么会上传不上去呢？再查看Image的Data大小，">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/2855070-1e640864e3ce90f4.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/18/一张图片引发的思考/"/>
+
+
+
+
+
+  <title>一张图片引发的思考 | DarrenW</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DarrenW</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/18/一张图片引发的思考/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DarrenW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DarrenW">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">一张图片引发的思考</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-18T14:09:38+08:00">
+                2018-10-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景："><a href="#背景：" class="headerlink" title="背景："></a>背景：</h2><p>前段时间做微信小程序分享，用了某家的SDK，然鹅……他们家SDK只能上传<code>png</code>、<code>jpeg</code>格式的图片，微信不是可以上传<code>Data</code>吗？？？？<br><img src="https://upload-images.jianshu.io/upload_images/2855070-1e640864e3ce90f4.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="???.jpeg"><br>我吭哧吭哧半天用<code>UIImageJPEGRepresentation</code>压缩图片，然后在生成图片，也没把图片传上去。我当时想肯定是图片大小有问题，因为微信限制128KB以内。我查看保存在沙盒里的图片才32KB啊？？怎么会上传不上去呢？再查看<code>Image</code>的<code>Data</code>大小，噗~~~168KB。好吧，我被打败了。最后还是用微信原生SDK才搞定，直接传一个<code>Data</code>过去，多开心，多easy。</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>好的，扯了这么多，其实就是想说一下为啥会有今天这篇大水文。在解决问题的过程中，我对iOS加载图片的理解稍微深入了那么一丢丢。现在，就水一下我理解的那么一丢丢东西。</p>
+<h3 id="图片经过哪些流程加载到屏幕上"><a href="#图片经过哪些流程加载到屏幕上" class="headerlink" title="图片经过哪些流程加载到屏幕上"></a>图片经过哪些流程加载到屏幕上</h3><ol>
+<li>从磁盘拷贝数据到内核缓冲区</li>
+<li>从内核缓冲区复制数据到用户空间（内存级别拷贝）</li>
+<li>生成<code>UIImage</code>，把<code>UIImage</code>赋值给<code>UIImageView</code></li>
+<li>如果图像数据为未解码的PNG/JPG，解码为位图数据</li>
+<li>隐式<code>CATransaction</code>捕获到<code>UIImageView</code>图层树的变化</li>
+<li>主线程<code>Runloop</code>提交<code>CATransaction</code>，开始进行图像渲染<br>6.1 如果数据没有字节对齐，Core Animation会再拷贝一份数据，进行字节对齐<br>6.2 GPU处理位图数据，进行渲染</li>
+</ol>
+<p>其中第四点就是导致我32KB变168KB的“罪魁祸首”。为啥这么说呢？先了解一些东西。</p>
+<h3 id="PNG"><a href="#PNG" class="headerlink" title="PNG"></a>PNG</h3><p><code>PNG</code>只支持无损压缩，所以它的压缩比是有上限的。它有<code>alpha</code>通道，支持图片透明。此外xcode会对png格式进行特殊的优化处理，而对于其他图片不做处理，所以我们一些小图标经常用<code>PNG</code>。</p>
+<h4 id="JPEG"><a href="#JPEG" class="headerlink" title="JPEG"></a>JPEG</h4><p><code>JPEG</code>支持有损压缩，不含有<code>alpha</code>通道，它可以通过图片质量换取内存空间。网络图片最好选用<code>JPEG</code>，可以节省流量、提高下载速度。</p>
+<h3 id="位图"><a href="#位图" class="headerlink" title="位图"></a>位图</h3><p>我们是否可以直接使用图片，使其显示在屏幕上呢？答案显然后<strong>不可以</strong>。图片经过解压后，变成位图数据。那么<a href="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_images/dq_images.html#//apple_ref/doc/uid/TP30001066-CH212-SW3" target="_blank" rel="noopener">位图</a>是什么呢?苹果给出的解释是</p>
+<blockquote>
+<p>A bitmap image (or sampled image) is an array of pixels (or samples)</p>
+</blockquote>
+<p>位图是一个像素数组。至于怎么将像素绘制到屏幕上，可以看<a href="https://objccn.io/issue-3-1/" target="_blank" rel="noopener">这篇文章</a>，就不做过多叙述（人家说的很明白）。</p>
+<h3 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h3><p>解码其实就是将图片的二进制数据转换成像素数据。这个过程是比较耗时的，不能使用 GPU 硬解码，只能通过 CPU 软解码实现（硬解码是通过解码电路实现，软解码是通过解码算法、CPU 的通用计算等方式实现软件层面的解码，效率不如 GPU 硬解码）。解码后的文件大小计算公式</p>
+<blockquote>
+<p>解压缩后的图片大小 = 图片的像素宽  <em> 图片的像素高  </em> 每个像素所占的字节数 (4)</p>
+</blockquote>
+<p>每个像素所占的字节数为什么是4呢？因为我们所使用的位图大部分是32位的RGBA模式，这种模式位图的一个像素所占内存为32位，也就是4个字节的长度 。<a href="https://stackoverflow.com/questions/23723564/which-cgimagealphainfo-should-we-use" target="_blank" rel="noopener">出处在此</a><br>所以，本地保存的32KB的图片，解码就是168KB了。（解压缩后的数据）<br><img src="https://upload-images.jianshu.io/upload_images/2855070-2e399ff3e5457a17.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="恍然大悟.jpg"></p>
+<h3 id="压缩图片"><a href="#压缩图片" class="headerlink" title="压缩图片"></a>压缩图片</h3><p>不过分享某一张图片的时候，我用<code>UIImageJPEGRepresentation</code>方法压缩不到128KB一下？？？什么图片这么大？后来问一下后台才知道，这张图片是相机拍摄的，尺寸非常大，只能重新设置图片尺寸。献上我的代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">func compressImage(_ image: UIImage, toByte maxLength: Int) -&gt; Data?&#123;</span><br><span class="line">    var compression: CGFloat = 1</span><br><span class="line"></span><br><span class="line">    var data = UIImageJPEGRepresentation(image, compression)!</span><br><span class="line">        if data.count &lt;= maxLength &#123;</span><br><span class="line">        return data</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var max: CGFloat = 1</span><br><span class="line">    var min: CGFloat = 0</span><br><span class="line"></span><br><span class="line">    let newSize = CGSize.init(width: 200, height: 160)</span><br><span class="line">    UIGraphicsBeginImageContext(newSize)</span><br><span class="line">    image.draw(in: CGRect.init(x: 0, y: 0, width: newSize.width, height: newSize.height))</span><br><span class="line">    let newImage = UIGraphicsGetImageFromCurrentImageContext()!</span><br><span class="line">    UIGraphicsEndImageContext()</span><br><span class="line">    data = UIImageJPEGRepresentation(newImage, 1.0)!</span><br><span class="line">    if data.count &lt;= maxLength &#123;</span><br><span class="line">        return data</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    for _ in 0..&lt;10 &#123;</span><br><span class="line">        compression = (max + min) / 2</span><br><span class="line">        data = UIImageJPEGRepresentation(newImage, compression)!</span><br><span class="line"></span><br><span class="line">        if CGFloat(data.count) &lt; CGFloat(maxLength) * 0.9 &#123;</span><br><span class="line">            min = compression</span><br><span class="line">        &#125; else if data.count &gt; maxLength &#123;</span><br><span class="line">            max = compression</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            break</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return data</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="图片加载"><a href="#图片加载" class="headerlink" title="图片加载"></a>图片加载</h2><p>通常我们说图片加载会用到两种方法：<code>imageNamed</code>、<code>imageWithContentsOfFile</code>，我们简单介绍这两种方法</p>
+<h3 id="imageNamed"><a href="#imageNamed" class="headerlink" title="imageNamed"></a>imageNamed</h3><p>该方法的特点在于可以缓存已经加载的图片；使用时，先根据文件名在系统缓存中寻找图片，如果找到了就返回；如果没有，就在<code>Bundle</code>内查找到文件名，找到后把这个文件名放到<code>UIImage</code>里返回，并没有进行实际的文件读取和解码。当<code>UIImage</code>第一次显示到屏幕上时，其内部的解码方法才会被调用，同时解码结果会保存到一个全局缓存去。在图片解码后，App 第一次退到后台和收到内存警告时，该图片的缓存才会被清空，其他情况下缓存会一直存在。</p>
+<h3 id="imageWithContentsOfFile"><a href="#imageWithContentsOfFile" class="headerlink" title="imageWithContentsOfFile"></a>imageWithContentsOfFile</h3><p>该方法仅加载图片，不缓存图像数据，其解码依然要等到第一次显示该图片的时候。<br>对于这两种方法，我们可以做出如下比较：</p>
+<ul>
+<li>本地（Assets）保存的图标加载使用<code>imageNamed</code></li>
+<li>经常使用且文件不大的图片使用<code>imageNamed</code></li>
+<li>对于一些文件较大的图片使用<code>imageWithContentsOfFile</code>，当然最好的办法是用<code>UIGraphicsBeginImageContext</code>方法重新绘制图片</li>
+</ul>
+<p>此外，在 WWDC 2018上，苹果为我们建议了一种大家平时使用较少的大图加载方式，它的实际占用内存与理论值最为接近。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">func downsample(imageAt imageURL: URL, to pointSize: CGSize, scale: CGFloat) -&gt; UIImage</span><br><span class="line">&#123;</span><br><span class="line">    let sourceOpt = [kCGImageSourceShouldCache : false] as  CFDictionary</span><br><span class="line">// 其他场景可以用createwithdata (data并未decode,所占内存没那么大),</span><br><span class="line">    let source = CGImageSourceCreateWithURL(imageURL as CFURL, sourceOpt)!</span><br><span class="line"></span><br><span class="line">    let maxDimension = max(pointSize.width, pointSize.height) * scale</span><br><span class="line">    let downsampleOpt = [kCGImageSourceCreateThumbnailFromImageAlways : true,</span><br><span class="line">                         kCGImageSourceShouldCacheImmediately : true ,</span><br><span class="line">                         kCGImageSourceCreateThumbnailWithTransform : true,</span><br><span class="line">                         kCGImageSourceThumbnailMaxPixelSize : maxDimension] as CFDictionary</span><br><span class="line">    let downsampleImage = CGImageSourceCreateThumbnailAtIndex(source, 0, downsampleOpt)!</span><br><span class="line">    return UIImage(cgImage: downsampleImage)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.cnbang.net/tech/2578/" target="_blank" rel="noopener">iOS图片加载速度极限优化—FastImageCache解析</a><br><a href="http://blog.leichunfeng.com/blog/2017/02/20/talking-about-the-decompression-of-the-image-in-ios/#jtss-tsina" target="_blank" rel="noopener">谈谈 iOS 中图片的解压缩</a><br><a href="https://juejin.im/post/5b2ddfa7e51d4553156be305" target="_blank" rel="noopener">iOS中的图片使用方式、内存对比和最佳实践</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/其它/" rel="tag"># 其它</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/09/源码阅读-Kingfisher/" rel="next" title="源码阅读 Kingfisher">
+                <i class="fa fa-chevron-left"></i> 源码阅读 Kingfisher
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">DarrenW</p>
+              <p class="site-description motion-element" itemprop="description">笨鸟先飞，知行合一。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/darren1192" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景："><span class="nav-number">1.</span> <span class="nav-text">背景：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图片经过哪些流程加载到屏幕上"><span class="nav-number">2.1.</span> <span class="nav-text">图片经过哪些流程加载到屏幕上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PNG"><span class="nav-number">2.2.</span> <span class="nav-text">PNG</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JPEG"><span class="nav-number">2.2.1.</span> <span class="nav-text">JPEG</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位图"><span class="nav-number">2.3.</span> <span class="nav-text">位图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解码"><span class="nav-number">2.4.</span> <span class="nav-text">解码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#压缩图片"><span class="nav-number">2.5.</span> <span class="nav-text">压缩图片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图片加载"><span class="nav-number">3.</span> <span class="nav-text">图片加载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#imageNamed"><span class="nav-number">3.1.</span> <span class="nav-text">imageNamed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#imageWithContentsOfFile"><span class="nav-number">3.2.</span> <span class="nav-text">imageWithContentsOfFile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DarrenW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
