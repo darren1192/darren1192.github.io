@@ -94,7 +94,7 @@
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-5736df1c662b58e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-6b909534f1a54995.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2855070-276d7c74a3257052.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-10-25T09:49:08.502Z">
+<meta property="og:updated_time" content="2018-11-05T06:53:11.269Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网络编程 - 概述">
 <meta name="twitter:description" content="首先看一张经典的图：说到网络编程一般都会说到OSI参考模型和TCP/IP模型，这篇文章主要从TCP/IP模型出发，谈谈我对网络编程的理解。TCP/IP模型分为四层，从下到上分别是网络接口层、网络层、传输层、应用层。越往下越靠近硬件，越往上越接近用户。每一层的分工不同，为了实现每一层的功能，制定了一些规则，这些规则就是协议。 网络接口层以太网协议以太网协议确定了一系列的约定，让一股又一股的电流能够传">
@@ -378,13 +378,16 @@
 <li>如果A没有在ARP缓存中找到B的MAC地址，它将询问192.168.1.2的MAC地址，从而将ARP请求帧广播到本地网络上的所有主机。本地网络上的每台主机都会将收到ARP请求并与自己的IP地址匹配。如果发现请求的IP地址和自己的IP地址不一样，它将放弃ARP请求。</li>
 <li>B收到ARP请求后，发现请求的IP地址与自己的IP地址一样，将A的IP地址和MAC地址映射添加到本地ARP缓存中。</li>
 <li>B将包含MAC地址的ARP回复消息发送给A。</li>
-<li>A收到B的ARP回复消息后，将B的IP和MAC地址映射更新ARP缓存（ARP缓存有生命期，当生命期接收后，再次重复上面过程）。A确定B的MAC地址后，进行IP通信。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-5736df1c662b58e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ARP.png"><br>但是，ARP 只能用于 IPv4 ，不能用于 IPv6。在IPv6 中可以用 ICMPv6 替代 ARP。<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2>有了MAC地址和IP地址，不管我们在不在一个子网内，我们都可以建立通信了。<br>但是，我们怎么知道对方发来的数据包，是供哪个程序使用呢？比如说我现在一边浏览网页，一边聊天。我接收到的数据包，是网页的内容？还是聊天内容？<br>这个时候我们就需要一个参数，表示这个数据包到底供哪个程序（进程）使用。这个参数就叫做”端口”，它其实是每一个使用网卡的程序的编号。每个数据包都发到主机的特定端口，所以不同的程序就能取到自己所需要的数据。<br>传输层的功能，就是建立”端口到端口”的通信。相比之下，”网络层”的功能是建立”主机到主机”的通信。<h3 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h3>传输层不止TCP协议，还有UDP协议。这里我们简单介绍一下TCP协议，来了解传输层的做了什么。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-6b909534f1a54995.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="TCP.jpg"><br>TPC协议里包含了首部和数据部分。</li>
+<li>A收到B的ARP回复消息后，将B的IP和MAC地址映射更新ARP缓存（ARP缓存有生命期，当生命期接收后，再次重复上面过程）。A确定B的MAC地址后，进行IP通信。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-5736df1c662b58e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ARP.png"><br>但是，ARP 只能用于 IPv4 ，不能用于 IPv6。在IPv6 中可以用 ICMPv6 替代 ARP。</li>
 </ol>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>有了MAC地址和IP地址，不管我们在不在一个子网内，我们都可以建立通信了。<br>但是，我们怎么知道对方发来的数据包，是供哪个程序使用呢？比如说我现在一边浏览网页，一边聊天。我接收到的数据包，是网页的内容？还是聊天内容？<br>这个时候我们就需要一个参数，表示这个数据包到底供哪个程序（进程）使用。这个参数就叫做”端口”，它其实是每一个使用网卡的程序的编号。每个数据包都发到主机的特定端口，所以不同的程序就能取到自己所需要的数据。<br>传输层的功能，就是建立”端口到端口”的通信。相比之下，”网络层”的功能是建立”主机到主机”的通信。</p>
+<h3 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h3><p>传输层不止TCP协议，还有UDP协议。这里我们简单介绍一下TCP协议，来了解传输层的做了什么。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-6b909534f1a54995.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="TCP.jpg"><br>TPC协议里包含了首部和数据部分。</p>
 <ul>
 <li>首部最重要的是源端口和目的端口。</li>
 <li>数据部分就是具体的内容。</li>
-<li>IP数据包的数据部分就是整个TCP数据。<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2>应用层是在用户空间实现的，负责处理众多业务逻辑，如文件传输、网络管理。它规定了应用程序的数据格式。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-276d7c74a3257052.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="all.jpg"></li>
+<li>IP数据包的数据部分就是整个TCP数据。</li>
 </ul>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>应用层是在用户空间实现的，负责处理众多业务逻辑，如文件传输、网络管理。它规定了应用程序的数据格式。<br><img src="https://upload-images.jianshu.io/upload_images/2855070-276d7c74a3257052.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="all.jpg"></p>
 <p>至此，我们就大概了解到TCP/IP模型，四层做了什么。如有错误之处，还望各位指出。</p>
 <p>参考：<br><a href="https://lvwenhan.com/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/485.html" target="_blank" rel="noopener">软件工程师需要了解的网络知识系列</a><br><a href="http://www.52im.net/thread-1095-1-1.html" target="_blank" rel="noopener">网络编程懒人入门</a></p>
 
@@ -426,6 +429,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/27/网络编程-TCP-IP协议/" rel="prev" title="网络编程 - TCP/IP协议">
+                网络编程 - TCP/IP协议 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -502,7 +509,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
