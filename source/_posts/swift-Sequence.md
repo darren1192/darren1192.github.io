@@ -1,10 +1,10 @@
 ---
-title: swift 内联序列函数sequence
+title: Swift 内联序列函数sequence
 date: 2018-09-13 20:24:08
-tags: swift 冷门方法
+tags: Swift 冷门方法
 ---
 在看RxSwift文章的时候，有人说到了Sequence。恕小弟才疏学浅，在日常搬砖中没有使用到它，所以在此记录一下。 
-sequence是在swift3就出现的。使用它们可以返回一个无限序列。我们可以给他们一个初始值，或者初始状态，然后他们便会以懒加载的方式应用到一个闭包。方法如下：
+sequence是在Swift3就出现的。使用它们可以返回一个无限序列。我们可以给他们一个初始值，或者初始状态，然后他们便会以懒加载的方式应用到一个闭包。方法如下：
 ```
 1.public func sequence<T>(first: T, next: @escaping (T) -> T?) -> UnfoldSequence<T, (T?, Bool)>
 2.public func sequence<T, State>(state: State, next: @escaping (inout State) -> T?) -> UnfoldSequence<T, State>

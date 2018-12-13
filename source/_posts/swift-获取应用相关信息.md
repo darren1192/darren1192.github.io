@@ -1,5 +1,5 @@
 ---
-title: swift 获取应用相关信息
+title: Swift 获取应用相关信息
 date: 2018-12-10 13:33:10
 tags: Swift
 ---

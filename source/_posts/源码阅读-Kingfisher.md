@@ -3,7 +3,7 @@ title: 源码阅读 Kingfisher
 date: 2018-10-09 20:33:02
 tags: 源码阅读
 ---
-[Kingfisher](https://github.com/onevcat/Kingfisher)是一个用于图片下载和缓存的轻量级、纯swift库。通过[喵神](https://weibo.com/onevcat?profile_ftype=1&is_all=1#_rnd1539003449528)的介绍，可以得知`Kingfisher`有以下特点：
+[Kingfisher](https://github.com/onevcat/Kingfisher)是一个用于图片下载和缓存的轻量级、纯Swift库。通过[喵神](https://weibo.com/onevcat?profile_ftype=1&is_all=1#_rnd1539003449528)的介绍，可以得知`Kingfisher`有以下特点：
 
 - 实现了图片的异步下载和缓存
 - 基于`URLSession`的网络，提供基本图像处理器和过滤器。
